@@ -21,9 +21,12 @@ async def logout():
 
 @router.post("/signup", response_model=User)
 def sign_up(user: UserCreate, db: Session = Depends(get_db)):
-    print(1)
     db_user = get_user_by_email(db, email=user.email)
-    print(2)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     return create_user(db=db, user=user)
+
+def test_get_user_no_movies(client):
+    response = client.get("/users/1/movies")
+    assert response.status_code == 400
+    assert response.json()["detail"] == "User does not exist"

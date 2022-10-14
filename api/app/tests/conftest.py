@@ -34,7 +34,6 @@ def start_application():
 
 SQLALCHEMY_DATABASE_URL = "postgresql://postgres:root@localhost:5432/movieramatest"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
-print(engine)
 if not database_exists(engine.url):
     create_database(engine.url)
 SessionTesting = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -45,25 +44,20 @@ def app() -> Generator[FastAPI, Any, None]:
     """
     Create a fresh database on each test case.
     """
-    print('edw')
     UserBase.metadata.create_all(bind=engine)
     MovieBase.metadata.create_all(bind=engine)
     LikeBase.metadata.create_all(bind=engine)
     HateBase.metadata.create_all(bind=engine)
     _app = start_application()
     yield _app
-    # UserBase.metadata.drop_all(bind=engine)
-    # MovieBase.metadata.drop_all(bind=engine)
-    # LikeBase.metadata.drop_all(bind=engine)
-    # HateBase.metadata.drop_all(bind=engine)
+    UserBase.metadata.drop_all(bind=engine)
+    MovieBase.metadata.drop_all(bind=engine)
+    LikeBase.metadata.drop_all(bind=engine)
+    HateBase.metadata.drop_all(bind=engine)
 
 @pytest.fixture(scope="session")
 def db_session(app: FastAPI) -> Generator[SessionTesting, Any, None]:
-    if not database_exists(engine.url):
-        create_database(engine.url)
-    else:
-        # Connect the database if exists.
-        connection = engine.connect()
+    connection = engine.connect()
     transaction = connection.begin()
     session = SessionTesting(bind=connection)
     yield session  # use the session in tests.
@@ -72,7 +66,7 @@ def db_session(app: FastAPI) -> Generator[SessionTesting, Any, None]:
     connection.close()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def client(
     app: FastAPI, db_session: SessionTesting
 ) -> Generator[TestClient, Any, None]:
