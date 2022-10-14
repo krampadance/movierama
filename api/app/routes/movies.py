@@ -24,7 +24,7 @@ def vote(movie_id: int, like: LikeCreate, db: Session = Depends(get_db)):
     return add_movie_like(db=db, movie_id=movie_id, like=like)
 
 @router.delete("/{movie_id}/like")
-def delete_vote(movie_id: int, like_delete: LikeDelete, db: Session = Depends(get_db)):
+def delete_like(movie_id: int, like_delete: LikeDelete, db: Session = Depends(get_db)):
     return delete_movie_like(db=db, movie_id=movie_id, like_delete=like_delete)
 
 @router.post("/{movie_id}/hate", response_model=Hate)
@@ -32,5 +32,5 @@ def vote(movie_id: int, hate: HateCreate, db: Session = Depends(get_db)):
     return add_movie_hate(db=db, movie_id=movie_id, hate=hate)
 
 @router.delete("/{movie_id}/hate")
-def delete_vote(movie_id: int, like_delete: HateDelete, db: Session = Depends(get_db)):
-    return delete_movie_hate(db=db, movie_id=movie_id, like_delete=like_delete)
+def delete_hate(movie_id: int, hate_delete: HateDelete, db: Session = Depends(get_db)):
+    return delete_movie_hate(db=db, movie_id=movie_id, hate_delete=hate_delete)

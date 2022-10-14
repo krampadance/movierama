@@ -65,9 +65,9 @@ def delete_movie_like(db: Session, movie_id: int, like_delete=LikeDelete):
     return
 
 def delete_movie_hate(db: Session, movie_id: int, hate_delete=HateDelete):
-    db_hate = db.query(Hate).filter(Hate.movie_id == movie_id, Like.user_id == hate_delete.user_id).first()
+    db_hate = db.query(Hate).filter(Hate.movie_id == movie_id, Hate.user_id == hate_delete.user_id).first()
     if db_hate is None:
-        raise HTTPException(status_code=404, detail="Like not found")
+        raise HTTPException(status_code=404, detail="Hate not found")
     db.delete(db_hate)
     db.commit()
     return
