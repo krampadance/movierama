@@ -1,0 +1,9 @@
+version: '2'
+services:
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=movierama
+    ports:
+      - 5432:5432
