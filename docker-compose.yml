@@ -7,3 +7,19 @@ services:
       - POSTGRES_DB=movierama
     ports:
       - 5432:5432
+    expose:
+      - 5432
+  api:
+    build: ./api
+    depends_on:
+      - postgres
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=postgres
+      - POSTGRES_HOST=postgres
+      - DATABASE=movierama
+      - POSTGRES_PORT=5432
+      - PORT=8000
+    ports: 
+      - 8000:80
+    restart: always
