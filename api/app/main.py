@@ -1,6 +1,5 @@
-from re import M
 from fastapi import FastAPI
-import uvicorn
+from .Config import Config
 
 from .routes import auth, users, movies
 from .models.user import Base as UserBase
@@ -25,4 +24,4 @@ app.include_router(movies.router)
 
 @app.get("/")
 async def root():
-    return "Movierama"
+    return "{}:{}".format(Config.NAME, Config.VERSION)
