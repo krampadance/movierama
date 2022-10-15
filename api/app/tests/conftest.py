@@ -20,7 +20,7 @@ from ..models.like import Base as LikeBase
 from ..models.hate import Base as HateBase
 from ..database.database import engine
 
-from ..utils import get_db
+from ..routes.dependencies import get_db
 
 
 def start_application():
