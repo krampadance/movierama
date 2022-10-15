@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from ..models.movie import Movie
 from ..models.like import Like
 from ..models.hate import Hate
-from ..schemas.movie import Movie
+from ..schemas.movie import MovieCreate
 
 
 def get_movie(db: Session, movie_id: int):
@@ -78,7 +78,7 @@ def get_all_movies(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Movie).all()
 
 
-def create_user_movie(db: Session, movie: Movie, user_id: int) -> Movie:
+def create_user_movie(db: Session, movie: MovieCreate, user_id: int) -> Movie:
     db_movie = Movie(**movie.dict(), user_id=user_id)
     db.add(db_movie)
     db.commit()

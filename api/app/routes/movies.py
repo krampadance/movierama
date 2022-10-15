@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from ..crud.movie import add_movie_hate, delete_movie_hate, delete_movie_like, get_movie, delete_movie_hate, get_all_movies, add_movie_like, create_user_movie
-from ..schemas.movie import Movie
+from ..schemas.movie import Movie, MovieCreate
 from ..schemas.like import Like
 from ..schemas.hate import Hate
 from ..utils import verify_token
@@ -17,7 +17,7 @@ def get_all(db: Session = Depends(get_db)):
     return get_all_movies(db=db)
 
 @router.post("/", response_model=Movie)
-def create_movie(movie: Movie, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def create_movie(movie: MovieCreate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     token_data = verify_token(token)
     return create_user_movie(db=db, movie=movie, user_id=token_data.user_id)
 

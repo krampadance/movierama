@@ -18,4 +18,4 @@ class Config(object):
     # JWT Related variables
     SECRET_KEY = os.getenv("SECRET_KEY", "THISISASECRETKEY")
     JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-    ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE", 10)
+    ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE", 100)
