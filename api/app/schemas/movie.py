@@ -11,10 +11,6 @@ class MovieBase(BaseModel):
     description: Optional[str] = None
 
 
-class MovieCreate(MovieBase):
-    pass
-
-
 class Movie(MovieBase):
     id: int
     user_id: int
