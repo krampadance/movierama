@@ -10,15 +10,13 @@ class MovieBase(BaseModel):
     title: str
     description: Optional[str] = None
 
-
 class MovieCreate(MovieBase):
     pass
 
-
 class Movie(MovieBase):
     id: int
-    user_id: int
     owner: User
+    user_id: int
     created_at: datetime
     likes_count: int
     hates_count: int

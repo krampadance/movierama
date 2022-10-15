@@ -1,19 +1,10 @@
 from pydantic import BaseModel
 
-class LikeDelete(BaseModel):
-    user_id: int
 
-class LikeBase(BaseModel):
-    user_id: int
-
-
-class LikeCreate(LikeBase):
-    pass
-
-
-class Like(LikeBase):
+class Like(BaseModel):
     id: int
     movie_id: int
+    user_id: int
 
     class Config:
         orm_mode = True

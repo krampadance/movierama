@@ -25,12 +25,17 @@ In order to build, you can use the Dockerfile found in the api folder.
 
 `docker build -t tag_name .`
 
+## 
 # Manual testing
-You can use the insomnia export that you can find in the documentation folder.
+You can use the insomnia export that you can find in the documentation folder. Or you can connect to the [openapi](http://localhost:8000/docs)
+
+You can also run,
+`pytest`
+in api directory to run the tests
 
 # Project structure
 ## routes/
-This folder keeps the different files for the routes of the microservice. Its route has its own file.
+This folder keeps the different files for the routes of the microservice. Its route has its own file. We also have the dependencies.py file that includes functions that are injected as dependencies in the endpoints
 
 ## crud/
 A collection of the crud operations for each route.
@@ -39,6 +44,6 @@ A collection of the crud operations for each route.
 The database models for the sqlalchemy.
 
 ## schemas/
-The data structures that correspond to the database models
+The data structures that correspond to the database models and other models.
 
 
