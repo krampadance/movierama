@@ -25,8 +25,13 @@ In order to build, you can use the Dockerfile found in the api folder.
 
 `docker build -t tag_name .`
 
+## 
 # Manual testing
 You can use the insomnia export that you can find in the documentation folder. Or you can connect to the [openapi](http://localhost:8000/docs)
+
+You can also run,
+`pytest`
+in api directory to run the tests
 
 # Project structure
 ## routes/
