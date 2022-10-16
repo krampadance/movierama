@@ -6,6 +6,8 @@ import datetime
 
 from ..database.database import Base
 
+from .vote import Vote
+
 
 class Movie(Base):
     __tablename__ = "movies"
@@ -20,18 +22,19 @@ class Movie(Base):
     # Calculating aggregate count value of related models and save them to parent model
     @aggregated('likes', Column(Integer, default=0))
     def likes_count(self):
-        return sa.func.count()
+        return sa.func.count(Vote.id).filter(Vote.is_like == True)
 
     @aggregated('hates', Column(Integer, default=0))
     def hates_count(self):
-        return sa.func.count()
+        return sa.func.count(Vote.id).filter(Vote.is_like == False)
 
     likes = relationship(
-        'Like',
+        'Vote',
         backref='likes'
     )
 
     hates = relationship(
-        'Hate',
-        backref='hates'
+        'Vote',
+        backref='hates',
+        viewonly=True
     )
