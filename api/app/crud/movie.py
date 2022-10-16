@@ -14,11 +14,16 @@ def get_movie(db: Session, movie_id: int):
 
 
 def add_vote(db: Session, movie_id: int, user_id: int, likes: bool):
+    """ 
+    User votes whether he like or not. If he has already liked and he likes, the vote is revoked.
+    Same happens with hate votes.
+    If he votes for first time, then the vote is registered
+    """
     movie = db.query(Movie).filter(Movie.id == movie_id,).first()
     if movie is None:
         raise HTTPException(status_code=404, detail="Movie not found")
-    # if movie.user_id == user_id:
-    #     raise HTTPException(status_code=403, detail="User cannot hate own movies")
+    if movie.user_id == user_id:
+        raise HTTPException(status_code=403, detail="User cannot vote own movies")
     db_vote = db.query(Vote).filter(Vote.movie_id == movie_id, Vote.user_id == user_id).first()
     if db_vote is not None:
         if db_vote.is_like == likes:  # If user already likes/hates delete existing vote

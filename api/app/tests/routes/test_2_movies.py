@@ -53,25 +53,23 @@ def test_get_all_movies(client):
     assert response_data[0]["title"] == "Test Movie 1"
 
 
-def test_movie_cannot_like_own(client):
+def test_movie_cannot_vote_own(client):
     token = login(client, "user@test.com", "testing")
     client.headers = {
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    response = client.post("/movies/1/like")
-    assert response.status_code == 403
-    assert response.json()["detail"] == "User cannot like own movies"
 
-def test_movie_cannot_hate_own(client):
-    token = login(client, "user@test.com", "testing")
-    client.headers = {
-        "content-type": "application/json",
-        "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
-    }
-    response = client.post("/movies/1/hate")
+    # Like own movie
+    response = client.post("/movies/1/vote", json.dumps({"likes": True}))
     assert response.status_code == 403
-    assert response.json()["detail"] == "User cannot hate own movies"
+    assert response.json()["detail"] == "User cannot vote own movies"
+
+    # Hate own movie
+    response = client.post("/movies/1/vote", json.dumps({"likes": False}))
+    assert response.status_code == 403
+    assert response.json()["detail"] == "User cannot vote own movies"
+    
 
 def test_movie_hate(client):
     token = login(client, "user1@test.com", "testing")
@@ -79,7 +77,7 @@ def test_movie_hate(client):
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    response = client.post("/movies/1/hate")
+    response = client.post("/movies/1/vote", json.dumps({"likes": False}))
     assert response.status_code == 200
     
     response = client.get("/movies/1")
@@ -94,7 +92,7 @@ def test_movie_like_when_already_hated(client):
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    response = client.post("/movies/1/like")
+    response = client.post("/movies/1/vote", json.dumps({"likes": True}))
     assert response.status_code == 200
     
     response = client.get("/movies/1")
@@ -108,7 +106,7 @@ def test_movie_like(client):
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    response = client.post("/movies/1/like")
+    response = client.post("/movies/1/vote", json.dumps({"likes": True}))
     assert response.status_code == 200
     
     response = client.get("/movies/1")
@@ -123,7 +121,7 @@ def test_movie_hate_when_already_liked(client):
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    response = client.post("/movies/1/hate")
+    response = client.post("/movies/1/vote", json.dumps({"likes": False}))
     assert response.status_code == 200
     
     response = client.get("/movies/1")
@@ -131,29 +129,14 @@ def test_movie_hate_when_already_liked(client):
     assert response.json()["likes_count"] == 1
     assert response.json()["hates_count"] == 1
 
-def test_delete_hate_non_existent(client):
-    """ When a user tries to delete a hate that does not exist """
-    token = login(client, "user1@test.com", "testing")
-    client.headers = {
-        "content-type": "application/json",
-        "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
-    }
-    response = client.delete("/movies/1/hate")
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Hate not found"
 
-    response = client.get("/movies/1")
-    assert response.status_code == 200
-    assert response.json()["likes_count"] == 1
-    assert response.json()["hates_count"] == 1
-
-def test_delete_hate(client):
+def test_unhate(client):
     token = login(client, "user2@test.com", "testing")
     client.headers = {
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    response = client.delete("/movies/1/hate")
+    response = client.post("/movies/1/vote", json.dumps({"likes": False}))
     assert response.status_code == 200
     
     response = client.get("/movies/1")
@@ -161,33 +144,17 @@ def test_delete_hate(client):
     assert response.json()["likes_count"] == 1
     assert response.json()["hates_count"] == 0
 
-def test_delete_like_non_existent(client):
-    """ When a user tries to delete a hate that does not exist """
-    token = login(client, "user2@test.com", "testing")
-    client.headers = {
-        "content-type": "application/json",
-        "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
-    }
-    response = client.delete("/movies/1/like")
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Like not found"
-
-    response = client.get("/movies/1")
-    assert response.status_code == 200
-    assert response.json()["likes_count"] == 1
-    assert response.json()["hates_count"] == 0
-
-def test_delete_like(client):
+def test_unlike(client):
+    # When user votes for a like, but it already exists
     token = login(client, "user1@test.com", "testing")
     client.headers = {
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    response = client.delete("/movies/1/like")
+    response = client.post("/movies/1/vote", json.dumps({"likes": True}))
     assert response.status_code == 200
     
     response = client.get("/movies/1")
     assert response.status_code == 200
     assert response.json()["likes_count"] == 0
     assert response.json()["hates_count"] == 0
-
