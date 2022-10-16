@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from ..crud.movie import add_movie_hate, delete_movie_hate, delete_movie_like, get_movie, delete_movie_hate, get_all_movies, add_movie_like, create_user_movie
+from ..crud.movie import get_movie, get_all_movies, create_user_movie, add_vote
 from ..schemas.movie import Movie, MovieCreate
-from ..schemas.like import Like
-from ..schemas.hate import Hate
+from ..schemas.vote import VoteCreate
 from ..utils import verify_token
 from .dependencies import oauth2_scheme, get_db
 
@@ -25,22 +24,7 @@ def create_movie(movie: MovieCreate, token: str = Depends(oauth2_scheme), db: Se
 def get(movie_id: int, db: Session = Depends(get_db)):
     return get_movie(db=db, movie_id=movie_id)
 
-@router.post("/{movie_id}/like", response_model=Like)
-def vote(movie_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+@router.post("/{movie_id}/vote")
+def vote(movie_id: int, vote: VoteCreate , token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     token_data = verify_token(token)
-    return add_movie_like(db=db, movie_id=movie_id, user_id=token_data.user_id)
-
-@router.delete("/{movie_id}/like")
-def delete_like(movie_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    token_data = verify_token(token)
-    return delete_movie_like(db=db, movie_id=movie_id, user_id=token_data.user_id)
-
-@router.post("/{movie_id}/hate", response_model=Hate)
-def vote(movie_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    token_data = verify_token(token)
-    return add_movie_hate(db=db, movie_id=movie_id, user_id=token_data.user_id)
-
-@router.delete("/{movie_id}/hate")
-def delete_hate(movie_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    token_data = verify_token(token)
-    return delete_movie_hate(db=db, movie_id=movie_id, user_id=token_data.user_id)
+    return add_vote(db=db, movie_id=movie_id, user_id=token_data.user_id, likes=vote.likes)

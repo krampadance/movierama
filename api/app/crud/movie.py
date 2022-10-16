@@ -2,8 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from ..models.movie import Movie
-from ..models.like import Like
-from ..models.hate import Hate
+from ..models.vote import Vote
 from ..schemas.movie import MovieCreate
 
 
@@ -13,61 +12,32 @@ def get_movie(db: Session, movie_id: int):
         raise HTTPException(status_code=404, detail="Movie not found")
     return movie
 
-def add_movie_like(db: Session, movie_id: int, user_id: int):
+
+def add_vote(db: Session, movie_id: int, user_id: int, likes: bool):
+    """ 
+    User votes whether he like or not. If he has already liked and he likes, the vote is revoked.
+    Same happens with hate votes.
+    If he votes for first time, then the vote is registered
+    """
     movie = db.query(Movie).filter(Movie.id == movie_id,).first()
     if movie is None:
         raise HTTPException(status_code=404, detail="Movie not found")
     if movie.user_id == user_id:
-        raise HTTPException(status_code=403, detail="User cannot like own movies")
-    db_like = db.query(Like).filter(Like.movie_id == movie_id, Like.user_id == user_id).first()
-    if db_like is not None:
-        raise HTTPException(status_code=403, detail="User already likes the movie")
-    hate = db.query(Hate).filter(Hate.movie_id == movie_id, Hate.user_id == user_id).first()
-    if hate is not None:
-        # Remove hate
-        db.delete(hate)
-        db.commit()
-    db_like = Like(user_id=user_id, movie_id=movie_id)
-    db.add(db_like)
+        raise HTTPException(status_code=403, detail="User cannot vote own movies")
+    db_vote = db.query(Vote).filter(Vote.movie_id == movie_id, Vote.user_id == user_id).first()
+    if db_vote is not None:
+        if db_vote.is_like == likes:  # If user already likes/hates delete existing vote
+            db.delete(db_vote)
+            db.commit()
+            return
+        else:  # Set vote
+            db_vote.is_like = likes
+    else:
+        db_vote = Vote(user_id=user_id, movie_id=movie_id, is_like=likes)
+        db.add(db_vote)
     db.commit()
-    db.refresh(db_like)
-    return db_like
-
-def add_movie_hate(db: Session, movie_id: int, user_id: int):
-    movie = db.query(Movie).filter(Movie.id == movie_id,).first()
-    if movie is None:
-        raise HTTPException(status_code=404, detail="Movie not found")
-    if movie.user_id == user_id:
-        raise HTTPException(status_code=403, detail="User cannot hate own movies")
-    db_hate = db.query(Hate).filter(Hate.movie_id == movie_id, user_id == user_id).first()
-    if db_hate is not None:
-        raise HTTPException(status_code=403, detail="User already hates the movie")
-    like = db.query(Like).filter(Like.movie_id == movie_id, Like.user_id == user_id).first()
-    if like is not None:
-        # Remove hate
-        db.delete(like)
-        db.commit()
-    db_hate = Hate(user_id=user_id, movie_id=movie_id)
-    db.add(db_hate)
-    db.commit()
-    db.refresh(db_hate)
-    return db_hate
-
-def delete_movie_like(db: Session, movie_id: int, user_id: int):
-    db_like = db.query(Like).filter(Like.movie_id == movie_id, Like.user_id == user_id).first()
-    if db_like is None:
-        raise HTTPException(status_code=404, detail="Like not found")
-    db.delete(db_like)
-    db.commit()
-    return
-
-def delete_movie_hate(db: Session, movie_id: int, user_id: int):
-    db_hate = db.query(Hate).filter(Hate.movie_id == movie_id, Hate.user_id == user_id).first()
-    if db_hate is None:
-        raise HTTPException(status_code=404, detail="Hate not found")
-    db.delete(db_hate)
-    db.commit()
-    return
+    db.refresh(db_vote)
+    return db_vote
 
 
 def get_movies_for_user(db: Session, user_id: int):

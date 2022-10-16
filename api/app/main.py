@@ -4,16 +4,14 @@ from .Config import Config
 from .routes import auth, users, movies
 from .models.user import Base as UserBase
 from .models.movie import Base as MovieBase
-from .models.like import Base as LikeBase
-from .models.hate import Base as HateBase
+from .models.vote import Base as VoteBase
 from .database.database import engine
 
 
 # Bind models to the database engine to create tables
 UserBase.metadata.create_all(bind=engine)
 MovieBase.metadata.create_all(bind=engine)
-LikeBase.metadata.create_all(bind=engine)
-HateBase.metadata.create_all(bind=engine)
+VoteBase.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
