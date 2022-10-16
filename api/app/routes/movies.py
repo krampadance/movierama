@@ -12,8 +12,8 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=list[Movie])
-def get_all(db: Session = Depends(get_db)):
-    return get_all_movies(db=db)
+def get_all(skip: int = 0, limit: int = 5, db: Session = Depends(get_db)):
+    return get_all_movies(db=db, skip=skip, limit=limit)
 
 @router.post("/", response_model=Movie)
 def create_movie(movie: MovieCreate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):

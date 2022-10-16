@@ -45,7 +45,7 @@ def get_movies_for_user(db: Session, user_id: int):
 
 
 def get_all_movies(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Movie).all()
+    return db.query(Movie).offset(skip).limit(limit).all()
 
 
 def create_user_movie(db: Session, movie: MovieCreate, user_id: int) -> Movie:
