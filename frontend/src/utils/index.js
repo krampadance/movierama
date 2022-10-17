@@ -1,4 +1,6 @@
 import moment from 'moment';
+import { notification } from 'antd';
+
 
 export const timeAgo = (date) => {
   const now = new Date();
@@ -7,3 +9,10 @@ export const timeAgo = (date) => {
   const timeAgoString = pastMoment.from(nowMoment); 
   return timeAgoString;
 }; 
+
+export const showError = (message, description) => {
+  notification['error']({
+    message: message,
+    description: description,
+  });
+};
