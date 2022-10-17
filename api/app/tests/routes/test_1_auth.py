@@ -9,7 +9,7 @@ def test_signup(client):
         "last_name": "user", 
         "email": "user@test.com",
         "password": "testing"}
-    response = client.post("/auth/signup", json.dumps(data))
+    response = client.post("/auth/signup/", json.dumps(data))
     assert response.status_code == 200
     res = User(**response.json())
     assert res.email == "user@test.com"
@@ -22,7 +22,7 @@ def test_signup(client):
         "last_name": "user1", 
         "email": "user1@test.com",
         "password": "testing"}
-    response = client.post("/auth/signup", json.dumps(data))
+    response = client.post("/auth/signup/", json.dumps(data))
     assert response.status_code == 200
     res = User(**response.json())
     assert res.email == "user1@test.com"
@@ -35,7 +35,7 @@ def test_signup(client):
         "last_name": "user2", 
         "email":"user2@test.com",
         "password":"testing"}
-    response = client.post("/auth/signup", json.dumps(data))
+    response = client.post("/auth/signup/", json.dumps(data))
     assert response.status_code == 200
     res = User(**response.json())
     assert res.email == "user2@test.com"
@@ -49,7 +49,7 @@ def test_signup_existing(client):
         "last_name": "user", 
         "email": "user@test.com",
         "password": "testing"}
-    response = client.post("/auth/signup", json.dumps(data))
+    response = client.post("/auth/signup/", json.dumps(data))
     assert response.status_code == 400
     assert response.json()["detail"] == "Email already registered"
 
@@ -59,7 +59,7 @@ def test_login(client):
         "username": "user@test.com",
         "password": "testing"
     }
-    response = client.post("/auth/login", data=data)
+    response = client.post("/auth/login/", data=data)
     assert response.status_code == 200
     assert "access_token" in response.json()
     assert "token_type" in response.json()
@@ -78,7 +78,7 @@ def test_login_wrong_password(client):
         "username": "user@test.com",
         "password": "wrong"
     }
-    response = client.post("/auth/login", data=data)
+    response = client.post("/auth/login/", data=data)
     assert response.status_code == 401
     assert response.json()["detail"] == "Incorrect username or password"
 
@@ -88,7 +88,7 @@ def test_login_wrong_username(client):
         "username": "wronguser@test.com",
         "password": "password"
     }
-    response = client.post("/auth/login", data=data)
+    response = client.post("/auth/login/", data=data)
     assert response.status_code == 401
     assert response.json()["detail"] == "Incorrect username or password"
     

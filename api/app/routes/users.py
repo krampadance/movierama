@@ -11,7 +11,7 @@ router = APIRouter(
     tags=["users"],
 )
 
-@router.get("/{user_id}/movies", response_model=list[Movie])
+@router.get("/{user_id}/movies/", response_model=list[Movie])
 def get_movies(user_id: int, skip: Union[int, None] = 0, limit: Union[int, None] = 1000, order_by: Union[str, None] = None, direction: Union[str, None] = None, db: Session = Depends(get_db)):
     return get_user_movies(db=db, user_id=user_id, skip=skip, limit=limit, order_by=order_by, direction=direction)
 

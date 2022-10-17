@@ -21,11 +21,11 @@ def create_movie(movie: MovieCreate, token: str = Depends(oauth2_scheme), db: Se
     token_data = verify_token(token)
     return create_user_movie(db=db, movie=movie, user_id=token_data.user_id)
 
-@router.get("/{movie_id}", response_model=Movie)
+@router.get("/{movie_id}/", response_model=Movie)
 def get(movie_id: int, db: Session = Depends(get_db)):
     return get_movie(db=db, movie_id=movie_id)
 
-@router.post("/{movie_id}/vote")
+@router.post("/{movie_id}/vote/")
 def vote(movie_id: int, vote: VoteCreate , token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     token_data = verify_token(token)
     return add_vote(db=db, movie_id=movie_id, user_id=token_data.user_id, likes=vote.likes)

@@ -10,13 +10,13 @@ def login(client, username, password):
         "username": username,
         "password": password
     }
-    response = client.post("/auth/login", data=data)
+    response = client.post("/auth/login/", data=data)
     assert response.status_code == 200
     return response.json()
     
 
 def test_get_all_movies_empty(client):
-    response = client.get("/movies")
+    response = client.get("/movies/")
     assert response.status_code == 200
     assert response.json() == []
 
@@ -45,7 +45,7 @@ def test_add_movie(client):
     assert response_data["hates_count"] == 0
 
 def test_get_all_movies(client):
-    response = client.get("/movies")
+    response = client.get("/movies/")
     assert response.status_code == 200
     response_data = response.json()
     
@@ -61,12 +61,12 @@ def test_movie_cannot_vote_own(client):
     }
 
     # Like own movie
-    response = client.post("/movies/1/vote", json.dumps({"likes": True}))
+    response = client.post("/movies/1/vote/", json.dumps({"likes": True}))
     assert response.status_code == 403
     assert response.json()["detail"] == "User cannot vote own movies"
 
     # Hate own movie
-    response = client.post("/movies/1/vote", json.dumps({"likes": False}))
+    response = client.post("/movies/1/vote/", json.dumps({"likes": False}))
     assert response.status_code == 403
     assert response.json()["detail"] == "User cannot vote own movies"
     
@@ -77,10 +77,10 @@ def test_movie_hate(client):
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    response = client.post("/movies/1/vote", json.dumps({"likes": False}))
+    response = client.post("/movies/1/vote/", json.dumps({"likes": False}))
     assert response.status_code == 200
     
-    response = client.get("/movies/1")
+    response = client.get("/movies/1/")
     assert response.status_code == 200
     assert response.json()["likes_count"] == 0
     assert response.json()["hates_count"] == 1
@@ -92,10 +92,10 @@ def test_movie_like_when_already_hated(client):
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    response = client.post("/movies/1/vote", json.dumps({"likes": True}))
+    response = client.post("/movies/1/vote/", json.dumps({"likes": True}))
     assert response.status_code == 200
     
-    response = client.get("/movies/1")
+    response = client.get("/movies/1/")
     assert response.status_code == 200
     assert response.json()["likes_count"] == 1
     assert response.json()["hates_count"] == 0
@@ -106,10 +106,10 @@ def test_movie_like(client):
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    response = client.post("/movies/1/vote", json.dumps({"likes": True}))
+    response = client.post("/movies/1/vote/", json.dumps({"likes": True}))
     assert response.status_code == 200
     
-    response = client.get("/movies/1")
+    response = client.get("/movies/1/")
     assert response.status_code == 200
     assert response.json()["likes_count"] == 2
     assert response.json()["hates_count"] == 0
@@ -121,10 +121,10 @@ def test_movie_hate_when_already_liked(client):
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    response = client.post("/movies/1/vote", json.dumps({"likes": False}))
+    response = client.post("/movies/1/vote/", json.dumps({"likes": False}))
     assert response.status_code == 200
     
-    response = client.get("/movies/1")
+    response = client.get("/movies/1/")
     assert response.status_code == 200
     assert response.json()["likes_count"] == 1
     assert response.json()["hates_count"] == 1
@@ -136,10 +136,10 @@ def test_unhate(client):
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    response = client.post("/movies/1/vote", json.dumps({"likes": False}))
+    response = client.post("/movies/1/vote/", json.dumps({"likes": False}))
     assert response.status_code == 200
     
-    response = client.get("/movies/1")
+    response = client.get("/movies/1/")
     assert response.status_code == 200
     assert response.json()["likes_count"] == 1
     assert response.json()["hates_count"] == 0
@@ -151,7 +151,7 @@ def test_unlike(client):
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    response = client.post("/movies/1/vote", json.dumps({"likes": True}))
+    response = client.post("/movies/1/vote/", json.dumps({"likes": True}))
     assert response.status_code == 200
     
     response = client.get("/movies/1")
