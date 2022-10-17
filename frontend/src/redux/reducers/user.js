@@ -10,24 +10,19 @@ const initialState = {
 export default function(state = initialState, action) {
     switch (action.type) {
     case SET_USER_ID: {
-        state.userId = action.payload;
-        return state;
+        return {...state, userId: action.payload};
     }
     case SET_USERNAME: {
-        state.userName = action.payload;
-        return state;
+        return {...state, userName: action.payload};
     }
     case SET_USER_LIKES: {
-        state.userLikes = action.payload;
-        return state;
+        return {...state, userLikes: action.payload};
     }
     case SET_USER_HATES: {
-        state.userHates = action.payload;
-        return state;
+        return {...state, userHates: action.payload};
     }
     case CLEAR_STATE: {
-        state ={};
-        return state;
+        return initialState;
     }
     default:
       return state;

@@ -14,7 +14,7 @@ const getDescription = (id, firstName, lastName, created) => {
     )
 }
 
-const MovieList = ({data, userLikes, userHates, userId }) => {
+const MovieList = ({ data }) => {
     return (
         <List
         itemLayout="vertical"

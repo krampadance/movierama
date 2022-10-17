@@ -1,4 +1,4 @@
-import { SET_USER_ID, SET_USER_HATES, SET_USER_LIKES, SET_USERNAME } from './actionTypes'
+import { SET_USER_ID, SET_USER_HATES, SET_USER_LIKES, SET_USERNAME, CLEAR_STATE } from './actionTypes'
 
 export const setUserId = userId => {
   return {
@@ -30,7 +30,7 @@ export const setUserLikes = likes => {
 
 export const clearState = () => {
   return {
-    type: SET_USER_LIKES,
+    type: CLEAR_STATE,
     payload: {},
   }
 }

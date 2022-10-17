@@ -110,7 +110,7 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
             <Col span={8} offset={10}>
               <div>Welcome <Link to={`users/${user.userId}`}>{user.userName}</Link> | 
               <a onClick={() => {
-                setToken('')
+                setToken({access_token: undefined})
                 clearState()
               }}>Logout</a></div>
             </Col>

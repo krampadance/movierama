@@ -10,7 +10,7 @@ import useToken from '../../Hooks/useToken';
 const IconText = ({ icon, text, movieId, ownerId, userLikes, userHates, userId }) => {
 
   const { token } = useToken();
-
+  // Token is not changing quickly after logout
   if (ownerId === userId || token === undefined) {
     return (
       <Space>
