@@ -5,7 +5,7 @@ from typing import Union
 from .utils import get_order_by_clause
 
 from ..models.user import User
-from ..schemas.user import UserCreate
+from ..schemas.user import UserCreate, UserData
 
 from ..models.movie import Movie
 from ..schemas.token import TokenData
@@ -51,9 +51,16 @@ def authenticate_user(db: Session, username: str, password: str):
     return user
 
 
-def get_current_user(db: Session, token: str):
+def get_current_user(db: Session, token: str) -> UserData:
     token_data : TokenData = verify_token(token)
     user = get_user_by_email(db, email=token_data.email)
     if user is None:
         raise credentials_exception
-    return user
+    return UserData(
+        id=user.id,
+        email=user.email,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        liked_movies=[vote.movie_id for vote in user.votes if vote.is_like is True],
+        hated_movies=[vote.movie_id for vote in user.votes if vote.is_like is False]
+    )

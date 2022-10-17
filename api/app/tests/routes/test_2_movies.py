@@ -29,28 +29,30 @@ def test_add_movie(client):
         "content-type": "application/json",
         "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
     }
-    data = {
-        "title": "Test Movie 1",
-        "description": "Test Movie 1 description"
-    }
-    response = client.post("/movies/", json.dumps(data))
-    assert response.status_code == 200
-    response_data = response.json()
-    assert response_data["id"] == 1
-    assert response_data["title"] == "Test Movie 1"
-    assert response_data["description"] == "Test Movie 1 description"
-    assert response_data["user_id"] == payload["user_id"]
-    assert response_data["owner"]["id"] == payload["user_id"]
-    assert response_data["likes_count"] == 0
-    assert response_data["hates_count"] == 0
+    data = [{
+        "title": "Test Movie {}".format(i),
+        "description": "Test Movie {} description".format(i)
+    } for i in range(0, 10)]
+
+    for movie in data:
+        response = client.post("/movies/", json.dumps(movie))
+        assert response.status_code == 200
+        response_data = response.json()
+        assert "id" in response_data
+        assert response_data["title"] == movie["title"]
+        assert response_data["description"] == movie["description"]
+        assert response_data["user_id"] == payload["user_id"]
+        assert response_data["owner"]["id"] == payload["user_id"]
+        assert response_data["likes_count"] == 0
+        assert response_data["hates_count"] == 0
+
 
 def test_get_all_movies(client):
     response = client.get("/movies/")
     assert response.status_code == 200
     response_data = response.json()
     
-    assert len(response_data) == 1
-    assert response_data[0]["title"] == "Test Movie 1"
+    assert len(response_data) == 10
 
 
 def test_movie_cannot_vote_own(client):
@@ -158,3 +160,75 @@ def test_unlike(client):
     assert response.status_code == 200
     assert response.json()["likes_count"] == 0
     assert response.json()["hates_count"] == 0
+
+
+def test_order_by(client):  #TODO: Add tests for created_at
+    # Like and hate movies
+    token = login(client, "user1@test.com", "testing")
+    client.headers = {
+        "content-type": "application/json",
+        "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
+    }
+
+    data = [(1, True), (2, True), (3, False), (4, False)]
+    
+    for movie, like in data:
+        response = client.post("/movies/{}/vote/".format(movie), json.dumps({"likes": like}))
+        assert response.status_code == 200
+
+     # Like and hate movies
+    token = login(client, "user2@test.com", "testing")
+    client.headers = {
+        "content-type": "application/json",
+        "Authorization": "{} {}".format(token["token_type"] , token["access_token"]),
+    }
+
+    data = [(1, True), (2, False), (3, False), (4, True)]
+    for movie, like in data:
+        response = client.post("/movies/{}/vote/".format(movie), json.dumps({"likes": like}))
+        assert response.status_code == 200
+    
+    # Check likes_count desc
+    response = client.get("/movies/?order_by=likes_count&direction=desc")
+    assert response.status_code == 200
+    response_data = response.json()
+    
+    assert len(response_data) == 10
+    assert response_data[0]["likes_count"] == 2
+    assert response_data[1]["likes_count"] == 1
+    assert response_data[2]["likes_count"] == 1
+    assert response_data[3]["likes_count"] == 0
+
+    # Check hates_count desc
+    response = client.get("/movies/?order_by=hates_count&direction=desc")
+    assert response.status_code == 200
+    response_data = response.json()
+    
+    assert len(response_data) == 10
+    assert response_data[0]["hates_count"] == 2
+    assert response_data[1]["hates_count"] == 1
+    assert response_data[2]["hates_count"] == 1
+    assert response_data[3]["hates_count"] == 0
+
+    # Check likes_count asc with skip and limit
+    response = client.get("/movies/?order_by=likes_count&direction=asc&skip=8&limit=2")
+    assert response.status_code == 200
+    response_data = response.json()
+    
+    assert len(response_data) == 2
+    assert response_data[0]["likes_count"] == 1
+    assert response_data[1]["likes_count"] == 2
+    assert response_data[1]["id"] == 1
+
+    # Check hates_count asc with skip and limit
+    response = client.get("/movies/?order_by=hates_count&direction=asc&skip=8&limit=2")
+    assert response.status_code == 200
+    response_data = response.json()
+    
+    assert len(response_data) == 2
+    assert response_data[0]["hates_count"] == 1
+    assert response_data[1]["hates_count"] == 2
+    assert response_data[1]["id"] == 3
+
+
+    
