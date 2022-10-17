@@ -162,7 +162,7 @@ def test_unlike(client):
     assert response.json()["hates_count"] == 0
 
 
-def test_order_by(client):  #TODO: Add tests for created_at
+def test_get_all_movies_order_by(client):  #TODO: Add tests for created_at and for user movies endpoint
     # Like and hate movies
     token = login(client, "user1@test.com", "testing")
     client.headers = {
