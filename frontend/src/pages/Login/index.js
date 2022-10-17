@@ -3,27 +3,22 @@ import React from 'react';
 import { login } from '../../services/apiCalls';
 import useToken from '../../Hooks/useToken';
 import { useNavigate } from 'react-router-dom';
+import { showError } from '../../utils'
 
 const Login = () => {
   const { setToken } = useToken();
   const navigate = useNavigate();
 
-  const showError = (description) => {
-    notification['error']({
-      message: 'Login error',
-      description: description,
-    });
-  };
-
-  const onFinish = (values) => {
-    login(values.username, values.password)
-    .then(res => {
+  const onFinish = async (values) => {
+    let res
+    try {
+      res = await login(values.username, values.password)
       setToken(res.data)
       navigate('/')
-    })
-    .catch(err => {
-      showError(err.response.data.detail)
-    })
+    } catch (e) {
+      showError("Login Error", e.response.data.detail)
+    }
+     await login(values.username, values.password)
   };
   
   return (
@@ -75,7 +70,7 @@ const Login = () => {
         }}
       >
         <Button type="primary" htmlType="submit">
-          Submit
+          Login
         </Button>
       </Form.Item>
     </Form>

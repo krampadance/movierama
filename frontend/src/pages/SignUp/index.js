@@ -3,17 +3,17 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { signup } from '../../services/apiCalls';
+import { showError } from '../../utils';
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const onFinish = (values) => {
-    signup(values.username, values.password, values.firstName, values.lastName)
-    .then(res => {
+  const onFinish = async (values) => {
+    try {
+      await signup(values.username, values.password, values.firstName, values.lastName)
       navigate('/login')
-    })
-    .catch(err => {
-      console.log(err)
-    })
+    } catch (e) {
+      showError("Error during signup", e.response.data.detail || e)
+    }
   };
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);

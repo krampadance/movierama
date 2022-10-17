@@ -15,14 +15,13 @@ const AddMovie = () => {
     });
   };
 
-  const onFinish = (values) => {
-    addMovie(values.title, values.description, token)
-    .then(res => {
+  const onFinish = async (values) => {
+    try {
+      await addMovie(values.title, values.description, token)
       navigate('/')
-    })
-    .catch(err => {
-      showError(err.response.data.detail)
-    })
+    } catch (e) {
+      showError("Could not add movie", e.response.data.detail)
+    }
   };
   
   return (
