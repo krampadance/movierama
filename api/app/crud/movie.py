@@ -1,4 +1,4 @@
-from dataclasses import field
+import datetime
 from fastapi import HTTPException
 from sqlalchemy import desc, asc
 from typing import Union
@@ -54,7 +54,7 @@ def get_all_movies(db: Session, order_by: Union[str, None], direction: str='asc'
 
 
 def create_user_movie(db: Session, movie: MovieCreate, user_id: int) -> Movie:
-    db_movie = Movie(**movie.dict(), user_id=user_id)
+    db_movie = Movie(**movie.dict(), user_id=user_id, created_at=datetime.datetime.utcnow())
     db.add(db_movie)
     db.commit()
     db.refresh(db_movie)
