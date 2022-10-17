@@ -1,29 +1,71 @@
-import { Divider, Skeleton, Button, Row, Col} from 'antd';
+import { Divider, Skeleton, Button, Row, Col, Radio} from 'antd';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import axios from 'axios';
 import './Main.css';
 import MovieList from '../../components/MovieList';
-import useToken from '../../services/useToken';
+import useToken from '../../Hooks/useToken';
 import LoginButton from '../../components/LoginButton';
-import { getMovies } from '../../services/apiCalls';
+import { getMovies, getUserData } from '../../services/apiCalls';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import SignUpButton from '../../components/SignUpButton';
+import { connect } from 'react-redux'
+import { setUserId, setUserName, setUserHates, setUserLikes, clearState } from '../../redux/actions';
 
-const Main = () => {
+
+const options = [
+    {
+      label: 'Likes',
+      value: 'likes_count',
+    },
+    {
+      label: 'Hates',
+      value: 'hates_count',
+    },
+    {
+      label: 'Date',
+      value: 'created_at',
+    },
+  ];
+
+const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearState }) => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const [skip, setSkip] = useState(0);
     const [loaded, setLoaded] = useState(false);
-    const { token, setToken, getToken } = useToken();
+    const { token, setToken } = useToken();
+    const [orderOption, setOrderOption] = useState("created_at");
+    const navigate = useNavigate();
 
-    const limit = 5;
+    const limit = 2;
+    
+    const selectOrderOption = ({ target: { value } }) => {
+        setOrderOption(value);
+      };
+
+    const loadUserData = () => {
+        if (token === undefined) {
+            return;
+        }
+        getUserData(token)
+        .then(res => {
+
+            setUserId(res.data.id)
+            setUserName(`${res.data.first_name} ${res.data.last_name}`)
+            setUserHates(res.data.hated_movies)
+            setUserLikes(res.data.liked_movies)
+      })
+      .catch((e) => {
+          console.log(e)
+      })
+    }
     
     const loadMoreData = () => {
       if (loading) {
         return;
       }
       setLoading(true);
-      
-      getMovies(skip, limit)
+      getMovies(skip, limit, orderOption, 'desc')
       .then(res => {
           const movies = res.data
           if (movies.length !== 0) {
@@ -39,17 +81,45 @@ const Main = () => {
           setLoading(false)
       })
     };
+
+    useEffect(() => {
+        loadUserData();
+      }, []);
   
     useEffect(() => {
       loadMoreData();
     }, []);
+
+    useEffect(() => {
+        console.log('reload')
+        // setData([])
+        setSkip(0)
+        // setLoaded(false)
+        // loadMoreData()
+      }, [orderOption]);
     
+
 
     return (
      <>
       <Row> 
         <Col span={8} className='title'>Movierama</Col>
-        {getToken() !== 0 && <Col span={8} offset={8}><LoginButton></LoginButton></Col>}
+        {token === undefined && <Col span={8} offset={7}><LoginButton></LoginButton><SignUpButton></SignUpButton></Col>}
+        {
+          token !== undefined && (
+            <Col span={8} offset={10}>
+              <div>Welcome <Link to={`users/${user.userId}`}>{user.userName}</Link> | 
+              <a onClick={() => {
+                setToken('')
+                clearState()
+              }}>Logout</a></div>
+            </Col>
+          )
+        }
+      </Row>
+      <Row>
+      <Col>Order By</Col>
+      <Col offset={2}><Radio.Group options={options} onChange={selectOrderOption} value={orderOption} optionType="button" /></Col>
       </Row>
       
       <Row>
@@ -58,7 +128,7 @@ const Main = () => {
             width: '60%',
             overflow: 'auto',
             padding: '8px 24px',
-          }}>
+        }}>
             <InfiniteScroll
           dataLength={data.length}
           next={loadMoreData}
@@ -78,11 +148,19 @@ const Main = () => {
         </InfiniteScroll>
         </Col>
         <Col>
-        {token !== undefined && <Button type='primary'>Add Movie</Button>}
+        {token !== undefined && <Button type='primary' onClick={() => navigate("/users/addMovie")}>Add Movie</Button>}
         </Col>
       </Row>
       </>
     );
   };
-  export default Main;
+
+  const mapStateToProps = state => {
+    console.log(state)
+    return { 
+      user: state,
+    };
+  }
+
+  export default connect(mapStateToProps, { setUserId, setUserName, setUserLikes, setUserHates, clearState })(Main);
   

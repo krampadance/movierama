@@ -1,11 +1,11 @@
 import { Button, Form, Input, notification, Col } from 'antd';
 import React from 'react';
-import { login } from '../../services/apiCalls';
+import { addMovie } from '../../services/apiCalls';
 import useToken from '../../Hooks/useToken';
 import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
-  const { setToken } = useToken();
+const AddMovie = () => {
+  const { token, setToken } = useToken();
   const navigate = useNavigate();
 
   const showError = (description) => {
@@ -16,9 +16,8 @@ const Login = () => {
   };
 
   const onFinish = (values) => {
-    login(values.username, values.password)
+    addMovie(values.title, values.description, token)
     .then(res => {
-      setToken(res.data)
       navigate('/')
     })
     .catch(err => {
@@ -28,7 +27,7 @@ const Login = () => {
   
   return (
     <>
-    <div>Movierama</div>
+    <div>Add Movie</div>
     <Col span={12} offset={6}>
     <Form
       name="basic"
@@ -42,13 +41,12 @@ const Login = () => {
       autoComplete="off"
     >
       <Form.Item
-        label="Email"
-        name="username"
+        label="Title"
+        name="title"
         rules={[
           {
             required: true,
-            type: "email",
-            message: 'Please input your email!',
+            message: 'Please enter a movie title',
           },
         ]}
       >
@@ -56,16 +54,16 @@ const Login = () => {
       </Form.Item>
 
       <Form.Item
-        label="Password"
-        name="password"
+        label="Description"
+        name="description"
         rules={[
           {
             required: true,
-            message: 'Please input your password!',
+            message: 'Please enter a movie description',
           },
         ]}
       >
-        <Input.Password />
+        <Input />
       </Form.Item>
 
       <Form.Item
@@ -75,7 +73,7 @@ const Login = () => {
         }}
       >
         <Button type="primary" htmlType="submit">
-          Submit
+          Add Movie
         </Button>
       </Form.Item>
     </Form>
@@ -83,4 +81,4 @@ const Login = () => {
     </>
   );
 };
-export default Login;
+export default AddMovie;

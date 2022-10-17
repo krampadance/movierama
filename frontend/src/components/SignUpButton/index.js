@@ -3,16 +3,15 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-
-const LoginButton = () => {
+const SignUpButton = () => {
     const navigate = useNavigate();
     return (
         <Button
             onClick={() => {
-                navigate('/login')
+                navigate('/signup')
             }}
-        >Login</Button>
+        >Sign Up</Button>
   );
 }
 
-export default LoginButton;
+export default SignUpButton;
