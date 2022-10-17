@@ -1,6 +1,8 @@
-from fastapi import HTTPException, status
-
+from sqlalchemy import desc, asc
 from sqlalchemy.orm import Session
+from typing import Union
+
+from .utils import get_order_by_clause
 
 from ..models.user import User
 from ..schemas.user import UserCreate
@@ -31,13 +33,13 @@ def create_user(db: Session, user: UserCreate) -> User:
     return db_user
 
 
-def get_user_movies(db: Session, user_id: int):
-    user = db.query(User).filter(User.id == user_id).first()
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User does not exist")
-    return db.query(Movie).filter(Movie.user_id == user_id).all()
+def get_user_movies(db: Session, user_id: int, order_by: Union[str, None], direction: str = 'asc', skip: int = 0, limit: int = 1000):
+    query = db.query(Movie).filter(Movie.user_id==user_id)
+    if order_by is None:
+        return query.offset(skip).limit(limit).all()
+    if direction == 'asc':
+        return query.order_by(get_order_by_clause(order_by, direction)).offset(skip).limit(limit).all()
+    return query.order_by(get_order_by_clause(order_by, direction)).offset(skip).limit(limit).all()
 
 
 def authenticate_user(db: Session, username: str, password: str):

@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from typing import Union
 from ..crud.movie import get_movie, get_all_movies, create_user_movie, add_vote
 from ..schemas.movie import Movie, MovieCreate
 from ..schemas.vote import VoteCreate
@@ -12,8 +13,8 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=list[Movie])
-def get_all(skip: int = 0, limit: int = 5, db: Session = Depends(get_db)):
-    return get_all_movies(db=db, skip=skip, limit=limit)
+def get_all(skip: Union[int, None] = 0, limit: Union[int, None] = 1000, order_by: Union[str, None] = None, direction: Union[str, None] = None , db: Session = Depends(get_db)):
+    return get_all_movies(db=db, skip=skip, limit=limit, order_by=order_by, direction=direction)
 
 @router.post("/", response_model=Movie)
 def create_movie(movie: MovieCreate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):

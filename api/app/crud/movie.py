@@ -1,5 +1,9 @@
+from dataclasses import field
 from fastapi import HTTPException
+from sqlalchemy import desc, asc
+from typing import Union
 from sqlalchemy.orm import Session
+from .utils import get_order_by_clause
 
 from ..models.movie import Movie
 from ..models.vote import Vote
@@ -40,12 +44,13 @@ def add_vote(db: Session, movie_id: int, user_id: int, likes: bool):
     return db_vote
 
 
-def get_movies_for_user(db: Session, user_id: int):
-    return db.query(Movie).filter(Movie.user_id == user_id).all()
-
-
-def get_all_movies(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Movie).offset(skip).limit(limit).all()
+def get_all_movies(db: Session, order_by: Union[str, None], direction: str='asc', skip: int = 0, limit: int = 1000):
+    query = db.query(Movie)
+    if order_by is None:
+        return query.offset(skip).limit(limit).all()
+    if direction == 'asc':
+        return query.order_by(get_order_by_clause(order_by, direction)).offset(skip).limit(limit).all()
+    return query.order_by(get_order_by_clause(order_by, direction)).offset(skip).limit(limit).all()
 
 
 def create_user_movie(db: Session, movie: MovieCreate, user_id: int) -> Movie:
