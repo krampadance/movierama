@@ -40,7 +40,8 @@ const SignUp = () => {
         rules={[
           {
             required: true,
-            type: "email",
+            // TODO: dont forget to tmove comment and in login
+            // type: "email",
             message: 'Please input your email!',
           },
         ]}
