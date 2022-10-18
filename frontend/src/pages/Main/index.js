@@ -1,8 +1,10 @@
-import { Divider, Skeleton, Button, Row, Col, Radio} from 'antd';
+import { Divider, Skeleton, Button, Row, Col, Radio, List} from 'antd';
+import { LikeOutlined, DislikeOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import './Main.css';
 import MovieList from '../../components/MovieList';
+import IconText from '../../components/IconText';
 import useToken from '../../Hooks/useToken';
 import LoginButton from '../../components/LoginButton';
 import { getMovies, getUserData } from '../../services/apiCalls';
@@ -13,8 +15,10 @@ import { showError } from '../../utils';
 import { connect } from 'react-redux'
 import { setUserId, setUserName, setUserHates, setUserLikes, clearState } from '../../redux/actions';
 
+import { timeAgo } from '../../utils';
 
-const options = [
+
+const orderOptionsList = [
     {
       label: 'Likes',
       value: 'likes_count',
@@ -27,49 +31,85 @@ const options = [
       label: 'Date',
       value: 'created_at',
     },
+    {
+      label: 'None',
+      value: 'none',
+    },
   ];
 
+const getDescription = (id, firstName, lastName, created) => {
+  return (
+      <>
+      Posted from <Link to={`/users/${id}`}>{firstName} {lastName}</Link> {timeAgo(created)}
+      </>
+  )
+}
+
 const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearState }) => {
+    const [initLoading, setInitLoading] = useState(true);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const [skip, setSkip] = useState(0);
     const [loaded, setLoaded] = useState(false);
     const { token, setToken } = useToken();
     const [orderDirection, setOrderDirection] = useState("desc")
-    const [orderOption, setOrderOption] = useState("likes_count");
+    const [orderOption, setOrderOption] = useState('none');
     const navigate = useNavigate();
 
     const limit = 2;
-    
-    const selectOrderOption = ({ target: { value } }) => {
-        setData([])
-        setSkip(0)
-        loadMoreData()
-        setOrderOption(value);
-      };
+
+    useEffect(() => {
+      loadUserData();
+      initData();
+      setSkip(limit)
+      setInitLoading(false);
+    }, []);
+
+    useEffect(() => {
+      initData()
+      setSkip(limit)
+    }, [orderOption]);
+
+    useEffect(() => {
+      initData()
+      setSkip(limit)
+    }, [orderDirection]);
+
 
     const loadUserData = async () => {
-        if (token === undefined) {
-            return;
-        }
-        try {
-            const res = await getUserData(token)
-            setUserId(res.data.id)
-            setUserName(`${res.data.first_name} ${res.data.last_name}`)
-            setUserHates(res.data.hated_movies)
-            setUserLikes(res.data.liked_movies)
-        } catch (e){
-          showError("Error loading user data", e.response.data.detail || e)
-        }
-    }
-    
-    const loadMoreData = async () => {
-      if (loading) {
-        return;
+      if (token === undefined) {
+          return;
       }
-      setLoading(true);
       try {
-        const res = await getMovies(skip, limit, orderOption, 'desc')
+          const res = await getUserData(token)
+          setUserId(res.data.id)
+          setUserName(`${res.data.first_name} ${res.data.last_name}`)
+          setUserHates(res.data.hated_movies)
+          setUserLikes(res.data.liked_movies)
+      } catch (e){
+        showError("Error loading user data", e.response.data.detail || e)
+      }
+   }
+  
+    const initData = async () => {
+      setLoading(true)
+      setSkip(0)
+      try {
+        const res = await getMovies(0, limit, orderOption, orderDirection)
+        const movies = res.data;
+        setData(movies)
+        setLoading(false)
+        setLoaded(false)
+      } catch (e) {
+        setLoading(false)
+        showError("Error loading movie data", e.response.data.detail || e)
+      }
+    }
+
+    const loadMore = async () => {
+      setLoading(true)
+      try {
+        const res = await getMovies(skip, limit, orderOption, orderDirection)
         const movies = res.data;
         if (movies.length !== 0) {
           setSkip(skip + limit)
@@ -77,28 +117,13 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
         if (movies.length < limit) {
           setLoaded(true)
         }
-        setData([...data, ...movies])
+        setData(data.concat(movies))
         setLoading(false)
       } catch (e) {
         setLoading(false)
         showError("Error loading movie data", e.response.data.detail || e)
       }
-    };
-  
-    useEffect(() => {
-      loadUserData();
-      loadMoreData();
-    }, []);
-
-    // useEffect(() => {
-    //     console.log('reload')
-    //     setData([])
-    //     setSkip(0)
-    //     setLoaded(false)
-    //     // loadMoreData()
-    //   }, [orderOption]);
-    
-
+    }
 
     return (
      <>
@@ -119,33 +144,86 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
       </Row>
       <Row>
       <Col>Order By</Col>
-      <Col offset={2}><Radio.Group options={options} onChange={selectOrderOption} value={orderOption} optionType="button" /></Col>
+      <Col offset={2}>
+        <Radio.Group 
+          options={orderOptionsList} 
+          onChange={({ target: { value } }) => {
+            setOrderOption(value)
+          }}
+          value={orderOption} optionType="button" />
+
+        <Radio.Group
+          onChange={({ target: { value } }) => {
+            setOrderDirection(value)
+          }}
+          value={orderDirection}>
+              <Radio value={'asc'}>Ascending</Radio>
+              <Radio value={'desc'}>Descending</Radio>
+        </Radio.Group>
+      </Col>
       </Row>
       
       <Row>
-        <Col id="scrollableDiv" style={{
-            height: '400px',
-            width: '60%',
+      <Col span={10}>
+        <div
+          id="scrollableDiv"
+          style={{
+            height: 400,
+            width: '100%',
             overflow: 'auto',
-            padding: '8px 24px',
-        }}>
-            <InfiniteScroll
+            padding: '0 16px',
+          }}
+        >
+        <InfiniteScroll
           dataLength={data.length}
-          next={loadMoreData}
-          hasMore={loaded == false}
-          loader={
-            <Skeleton
-              paragraph={{
-                rows: 1,
-              }}
-              active
-            />
-          }
-          endMessage={<Divider plain>End of list</Divider>}
+          next={loadMore}
+          hasMore={!loaded}
+          loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
+          endMessage={<Divider plain>Loaded whole list</Divider>}
           scrollableTarget="scrollableDiv"
         >
-          <MovieList data={data}/>
+        
+          <List
+          style={{
+            lineHeight: '32px',
+            height: "auto",
+          }}
+          itemLayout="vertical"
+          dataSource={data}
+          renderItem={(item) => {
+            return (
+              <List.Item
+                  style={{margin: "10%"}}
+                  key={item.id}
+                  actions={[
+                      <IconText 
+                          icon={LikeOutlined}
+                          text={item.likes_count}
+                          ownerId={item.owner.id}
+                          movieId={item.id}
+                          key="list-vertical-like-o"
+                      />,
+                      <IconText 
+                          icon={DislikeOutlined}
+                          text={item.hates_count}
+                          ownerId={item.owner.id}
+                          movieId={item.id}
+                          key="list-vertical-like-o"
+                      />,
+                  ]}
+              >
+              <List.Item.Meta
+                  title={item.title}
+                  description={getDescription(item.owner.id, item.owner.first_name, item.owner.last_name, item.created_at)}
+              />
+              <div>{item.description}</div>
+              </List.Item>
+          )}}
+          />
         </InfiniteScroll>
+        </div>
+        <Row>
+        </Row>
         </Col>
         <Col>
         {token !== undefined && <Button type='primary' onClick={() => navigate("/users/addMovie")}>Add Movie</Button>}

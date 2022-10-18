@@ -1,9 +1,16 @@
-import axios from 'axios';
-
+import axios from 'axios'
+console.log(process.env)
+// const api_url = process.env.API_URL
 const api_url = "http://localhost:8000"
 
 
-export const getMovies = async (skip, limit, order_by="none", direction="asc") => {
+export const getMovies = async (skip, limit, order_by, direction="asc") => {
+    if (order_by === 'none') {
+        return axios.get(`${api_url}/movies/?skip=${skip}&limit=${limit}&direction=${direction}`)
+    }
+    if (order_by === 'created_at') { // Revert order direction when created_at is chosen because we render the period that the movie was created
+        direction = direction === 'asc' ? 'desc' : 'asc'
+    }
     return axios.get(`${api_url}/movies/?skip=${skip}&limit=${limit}&order_by=${order_by}&direction=${direction}`)
 }
 
@@ -24,6 +31,12 @@ export const addHate = async (movieId, token) => {
 }
 
 export const getUserMovies = async (userId, skip, limit, order_by, direction) => {
+    if (order_by === 'none') {
+        return axios.get(`${api_url}/users/${userId}/movies/?skip=${skip}&limit=${limit}&direction=${direction}`)
+    }
+    if (order_by === 'created_at') { // Revert order direction when created_at is chosen because we render the period that the movie was created
+        direction = direction === 'asc' ? 'desc' : 'asc'
+    }
     return axios.get(`${api_url}/users/${userId}/movies/?skip=${skip}&limit=${limit}&order_by=${order_by}&direction=${direction}`)
 }
 
