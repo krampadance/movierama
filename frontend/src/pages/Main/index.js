@@ -41,9 +41,8 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
     const [loaded, setLoaded] = useState(false);
     const [orderDirection, setOrderDirection] = useState("desc")
     const [orderOption, setOrderOption] = useState('none');
+    const [limit, setLimit] = useState(process.env.REACT_APP_QUERY_LIMIT || 2)
     const navigate = useNavigate();
-
-    const limit = 2;
 
     useEffect(() => {
       loadUserData();

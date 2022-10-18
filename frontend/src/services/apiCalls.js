@@ -1,7 +1,5 @@
 import axios from 'axios'
-console.log(process.env)
-// const api_url = process.env.API_URL
-const api_url = "http://localhost:8000"
+const api_url = process.env.REACT_APP_API_URL
 
 
 export const getMovies = async (skip, limit, order_by, direction="asc") => {

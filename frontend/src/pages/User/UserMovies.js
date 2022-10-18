@@ -1,9 +1,7 @@
 import { Divider, Skeleton, Button, Row, Col, Radio, List} from 'antd';
-import { LikeOutlined, DislikeOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MovieList from '../../components/MovieList';
-import IconText from '../../components/IconText';
 import LoginButton from '../../components/LoginButton';
 import { getUserMovies, getUserData } from '../../services/apiCalls';
 import { Link } from 'react-router-dom';
@@ -36,13 +34,6 @@ const orderOptionsList = [
     },
   ];
 
-const getDescription = (id, firstName, lastName, created) => {
-  return (
-      <>
-      Posted from <Link to={`/users/${id}`}>{firstName} {lastName}</Link> {timeAgo(created)}
-      </>
-  )
-}
 
 const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearState }) => {
     const [initLoading, setInitLoading] = useState(true);
@@ -53,9 +44,9 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
     const [orderDirection, setOrderDirection] = useState("desc")
     const [orderOption, setOrderOption] = useState('none');
     const [pageStart, setPageStart] = useState(0)
+    const [limit, setLimit] = useState(process.env.REACT_APP_QUERY_LIMIT || 2)
     const navigate = useNavigate();
 
-    const limit = 2;
     const { id } = useParams();
 
 
