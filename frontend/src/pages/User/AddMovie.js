@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { addMovie } from '../../services/apiCalls';
+import { showSuccess } from '../../utils';
 
 function AddMovie({ accessToken }) {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ function AddMovie({ accessToken }) {
   const onFinish = async (values) => {
     try {
       await addMovie(values.title, values.description, accessToken);
+      showSuccess('Movie added', `Movie ${values.title} created successfully`);
       navigate('/');
     } catch (e) {
       showError('Could not add movie', e.response.data.detail);

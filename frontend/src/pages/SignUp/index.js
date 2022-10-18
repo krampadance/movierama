@@ -3,13 +3,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { signup } from '../../services/apiCalls';
-import { showError } from '../../utils';
+import { showError, showSuccess } from '../../utils';
 
 function SignUp() {
   const navigate = useNavigate();
   const onFinish = async (values) => {
     try {
       await signup(values.username, values.password, values.firstName, values.lastName);
+      showSuccess('User created successfully', 'Please login to post your movies');
       navigate('/login');
     } catch (e) {
       showError('Error during signup', e.response.data.detail || e);

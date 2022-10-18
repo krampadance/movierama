@@ -15,3 +15,10 @@ export const showError = (message, description) => {
     description
   });
 };
+
+export const showSuccess = (message, description) => {
+  notification.success({
+    message,
+    description
+  });
+};
