@@ -2,7 +2,6 @@ import { Divider, Skeleton, Row, Col} from 'antd';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MovieList from '../../components/MovieList';
-import useToken from '../../Hooks/useToken';
 import LoginButton from '../../components/LoginButton';
 import SignUpButton from '../../components/SignUpButton';
 import { getUserMovies } from '../../services/apiCalls';
@@ -18,18 +17,17 @@ const UserMovies = ({ user, setUserId, setUserName, setUserHates, setUserLikes, 
     const [data, setData] = useState([]);
     const [skip, setSkip] = useState(0);
     const [loaded, setLoaded] = useState(false);
-    const { token, setToken } = useToken();
     const [orderOption, setOrderOption] = useState("likes_count")
     const limit = 5;
 
     let { id } = useParams();
 
     const loadUserData = async () => {
-      if (token === undefined) {
+      if (user.accessToken === undefined) {
           return;
       }
       try {
-          const res = await getUserData(token)
+          const res = await getUserData(user.accessToken)
           setUserId(res.data.id)
           setUserName(`${res.data.first_name} ${res.data.last_name}`)
           setUserHates(res.data.hated_movies)
@@ -71,13 +69,12 @@ const UserMovies = ({ user, setUserId, setUserName, setUserHates, setUserLikes, 
      <>
       <Row> 
         <Col span={8} className='title'>Movierama</Col>
-        {token === undefined && <Col span={8} offset={7}><LoginButton></LoginButton><SignUpButton></SignUpButton></Col>}
+        {user.accessToken === undefined && <Col span={8} offset={7}><LoginButton></LoginButton><SignUpButton></SignUpButton></Col>}
         {
-          token !== undefined && (
+          user.accessToken !== undefined && (
             <Col span={8} offset={10}>
               <div>Welcome <Link to={`users/${user.userId}`}>{user.userName}</Link> | 
               <a onClick={() => {
-                setToken('')
                 clearState()
               }}>Logout</a></div>
             </Col>

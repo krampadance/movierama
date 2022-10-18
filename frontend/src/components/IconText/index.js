@@ -3,15 +3,10 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { LikeOutlined } from '@ant-design/icons';
 import { addLike, addHate } from '../../services/apiCalls';
-import useToken from '../../Hooks/useToken';
 
 
-
-const IconText = ({ icon, text, movieId, ownerId, userLikes, userHates, userId }) => {
-
-  const { token } = useToken();
-  // Token is not changing quickly after logout
-  if (ownerId === userId || token === undefined) {
+const IconText = ({ icon, text, movieId, ownerId, userLikes, userHates, userId, accessToken }) => {
+  if (ownerId === userId || userId === undefined) {
     return (
       <Space>
       {React.createElement(icon)}
@@ -31,9 +26,9 @@ const IconText = ({ icon, text, movieId, ownerId, userLikes, userHates, userId }
       },
         onClick: () => {
           if (icon === LikeOutlined) {
-            return addLike(movieId, token)
+            return addLike(movieId, accessToken)
           } 
-          return addHate(movieId, token)
+          return addHate(movieId, accessToken)
         }})}
       {text}
     </Space>
@@ -44,7 +39,8 @@ const mapStateToProps = state => {
   return { 
     userLikes: state.userLikes,
     userHates: state.userHates,
-    userId: state.userId
+    userId: state.userId,
+    accessToken: state.accessToken
   };
 }
 

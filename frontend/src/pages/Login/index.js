@@ -1,19 +1,19 @@
 import { Button, Form, Input, notification, Col } from 'antd';
 import React from 'react';
 import { login } from '../../services/apiCalls';
-import useToken from '../../Hooks/useToken';
 import { useNavigate } from 'react-router-dom';
 import { showError } from '../../utils'
+import { connect } from 'react-redux'
+import { setAccessToken } from '../../redux/actions';
 
-const Login = () => {
-  const { setToken } = useToken();
+const Login = ({setAccessToken}) => {
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
     let res
     try {
       res = await login(values.username, values.password)
-      setToken(res.data)
+      setAccessToken(res.data.access_token)
       navigate('/')
     } catch (e) {
       showError("Login Error", e.response.data.detail)
@@ -42,7 +42,7 @@ const Login = () => {
         rules={[
           {
             required: true,
-            type: "email",
+            // type: "email",
             message: 'Please input your email!',
           },
         ]}
@@ -78,4 +78,5 @@ const Login = () => {
     </>
   );
 };
-export default Login;
+
+export default connect(null, { setAccessToken })(Login);

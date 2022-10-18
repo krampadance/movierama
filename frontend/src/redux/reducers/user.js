@@ -1,10 +1,11 @@
-import { SET_USER_ID, SET_USERNAME, SET_USER_HATES, SET_USER_LIKES, CLEAR_STATE } from "../actionTypes";
+import { SET_USER_ID, SET_USERNAME, SET_USER_HATES, SET_USER_LIKES, CLEAR_STATE, SET_ACCESS_TOKEN } from "../actionTypes";
 
 const initialState = {
-  userId: null,
-  userName: null,
+  userId: undefined,
+  userName: undefined,
   userLikes: [],
-  userHates: []
+  userHates: [],
+  accessToken: undefined
 };
 
 export default function(state = initialState, action) {
@@ -20,6 +21,9 @@ export default function(state = initialState, action) {
     }
     case SET_USER_HATES: {
         return {...state, userHates: action.payload};
+    }
+    case SET_ACCESS_TOKEN: {
+        return {...state, accessToken: action.payload};
     }
     case CLEAR_STATE: {
         return initialState;

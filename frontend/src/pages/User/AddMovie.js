@@ -1,11 +1,10 @@
 import { Button, Form, Input, notification, Col } from 'antd';
 import React from 'react';
 import { addMovie } from '../../services/apiCalls';
-import useToken from '../../Hooks/useToken';
 import { useNavigate } from 'react-router-dom';
+import { connect } from 'react-redux'
 
-const AddMovie = () => {
-  const { token, setToken } = useToken();
+const AddMovie = ({ accessToken }) => {
   const navigate = useNavigate();
 
   const showError = (description) => {
@@ -17,7 +16,7 @@ const AddMovie = () => {
 
   const onFinish = async (values) => {
     try {
-      await addMovie(values.title, values.description, token)
+      await addMovie(values.title, values.description, accessToken)
       navigate('/')
     } catch (e) {
       showError("Could not add movie", e.response.data.detail)
@@ -80,4 +79,11 @@ const AddMovie = () => {
     </>
   );
 };
-export default AddMovie;
+
+const mapStateToProps = state => {
+  return { 
+    accessToken: state.accessToken,
+  };
+}
+
+export default connect(mapStateToProps)(AddMovie);

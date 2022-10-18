@@ -1,4 +1,4 @@
-import { SET_USER_ID, SET_USER_HATES, SET_USER_LIKES, SET_USERNAME, CLEAR_STATE } from './actionTypes'
+import { SET_USER_ID, SET_USER_HATES, SET_USER_LIKES, SET_USERNAME, CLEAR_STATE, SET_ACCESS_TOKEN } from './actionTypes'
 
 export const setUserId = userId => {
   return {
@@ -25,6 +25,13 @@ export const setUserLikes = likes => {
   return {
     type: SET_USER_LIKES,
     payload: likes,
+  }
+}
+
+export const setAccessToken = accessToken => {
+  return {
+    type: SET_ACCESS_TOKEN,
+    payload: accessToken,
   }
 }
 

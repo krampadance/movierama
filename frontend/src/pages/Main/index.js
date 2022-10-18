@@ -5,7 +5,6 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import './Main.css';
 import MovieList from '../../components/MovieList';
 import IconText from '../../components/IconText';
-import useToken from '../../Hooks/useToken';
 import LoginButton from '../../components/LoginButton';
 import { getMovies, getUserData } from '../../services/apiCalls';
 import { Link } from 'react-router-dom';
@@ -51,7 +50,6 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
     const [data, setData] = useState([]);
     const [skip, setSkip] = useState(0);
     const [loaded, setLoaded] = useState(false);
-    const { token, setToken } = useToken();
     const [orderDirection, setOrderDirection] = useState("desc")
     const [orderOption, setOrderOption] = useState('none');
     const navigate = useNavigate();
@@ -77,11 +75,11 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
 
 
     const loadUserData = async () => {
-      if (token === undefined) {
+      if (user.accessToken === undefined) {
           return;
       }
       try {
-          const res = await getUserData(token)
+          const res = await getUserData(user.accessToken)
           setUserId(res.data.id)
           setUserName(`${res.data.first_name} ${res.data.last_name}`)
           setUserHates(res.data.hated_movies)
@@ -129,13 +127,12 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
      <>
       <Row> 
         <Col span={8} className='title'>Movierama</Col>
-        {token === undefined && <Col span={8} offset={7}><LoginButton></LoginButton><SignUpButton></SignUpButton></Col>}
+        {user.accessToken === undefined && <Col span={8} offset={7}><LoginButton></LoginButton><SignUpButton></SignUpButton></Col>}
         {
-          token !== undefined && (
+          user.accessToken !== undefined && (
             <Col span={8} offset={10}>
               <div>Welcome <Link to={`users/${user.userId}`}>{user.userName}</Link> | 
               <a onClick={() => {
-                setToken({access_token: undefined})
                 clearState()
               }}>Logout</a></div>
             </Col>
@@ -226,7 +223,7 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
         </Row>
         </Col>
         <Col>
-        {token !== undefined && <Button type='primary' onClick={() => navigate("/users/addMovie")}>Add Movie</Button>}
+        {user.accessToken !== undefined && <Button type='primary' onClick={() => navigate("/users/addMovie")}>Add Movie</Button>}
         </Col>
       </Row>
       </>
