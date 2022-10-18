@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 class VoteCreate(BaseModel):
-    likes: bool
+    likes: bool  # TODO: it makes more sense to make it into type ("like", or "hate")
 
 class Vote(BaseModel):
     id: int

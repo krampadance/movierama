@@ -12,6 +12,7 @@ router = APIRouter(
     tags=["movies"],
 )
 
+# TODO: be able to add accepted values for the fields (e.g direction is 'asc' or 'desc')
 @router.get("/", response_model=list[Movie])
 def get_all(skip: Union[int, None] = 0, limit: Union[int, None] = 1000, order_by: Union[str, None] = None, direction: Union[str, None] = None , db: Session = Depends(get_db)):
     return get_all_movies(db=db, skip=skip, limit=limit, order_by=order_by, direction=direction)
