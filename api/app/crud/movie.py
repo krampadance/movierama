@@ -47,7 +47,7 @@ def add_vote(db: Session, movie_id: int, user_id: int, likes: bool):
 def get_all_movies(db: Session, order_by: Union[str, None], direction: str='asc', skip: int = 0, limit: int = 1000):
     query = db.query(Movie)
     if order_by is None:
-        return query.offset(skip).limit(limit).all()
+        return query.order_by(Movie.id.asc()).offset(skip).limit(limit).all()
     if direction == 'asc':  # The extra order by id is added because when multiple movies have same value, results can be skipped because of the limit
         return query.order_by(get_order_by_clause(order_by, direction), Movie.id.asc()).offset(skip).limit(limit).all()
     return query.order_by(get_order_by_clause(order_by, direction), Movie.id.asc()).offset(skip).limit(limit).all()

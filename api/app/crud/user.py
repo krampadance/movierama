@@ -36,7 +36,7 @@ def create_user(db: Session, user: UserCreate) -> User:
 def get_user_movies(db: Session, user_id: int, order_by: Union[str, None], direction: str = 'asc', skip: int = 0, limit: int = 1000):
     query = db.query(Movie).filter(Movie.user_id==user_id)
     if order_by is None:
-        return query.offset(skip).limit(limit).all()
+        return query.order_by( Movie.id.asc()).offset(skip).limit(limit).all()
     if direction == 'asc':  # The extra order by id is added because when multiple movies have same value, results can be skipped because of the limit
         return query.order_by(get_order_by_clause(order_by, direction), Movie.id.asc()).offset(skip).limit(limit).all()
     return query.order_by(get_order_by_clause(order_by, direction), Movie.id.asc()).offset(skip).limit(limit).all()
