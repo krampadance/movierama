@@ -13,7 +13,7 @@ const options = [
   {
     label: 'Date',
     value: 'created_at'
-  }
+  },
 ];
 
 function OrderOptions() {

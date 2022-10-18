@@ -32,7 +32,7 @@ const orderOptionsList = [
   {
     label: 'None',
     value: 'none'
-  }
+  },
 ];
 
 function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearState }) {
@@ -136,12 +136,12 @@ function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
               Welcome
               <Link to={`users/${user.userId}`}>{user.userName}</Link> |
               <a
-                onClick={() => {
+  onClick={() => {
                   clearState();
                 }}
-              >
+>
                 Logout
-              </a>
+</a>
             </div>
           </Col>
         )}
@@ -162,8 +162,7 @@ function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
             onChange={({ target: { value } }) => {
               setOrderDirection(value);
             }}
-            value={orderDirection}
-          >
+            value={orderDirection}>
             <Radio value="asc">Ascending</Radio>
             <Radio value="desc">Descending</Radio>
           </Radio.Group>
@@ -179,8 +178,7 @@ function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
             width: '100%',
             overflow: 'auto',
             padding: '0 16px'
-          }}
-        >
+          }}>
           <InfiniteScroll
             dataLength={data.length}
             next={loadMore}
@@ -188,8 +186,7 @@ function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
             hasMore={!loaded}
             loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
             endMessage={<Divider plain>Loaded whole list</Divider>}
-            scrollableTarget="scrollableDiv"
-          >
+            scrollableTarget="scrollableDiv">
             <MovieList data={data} />
           </InfiniteScroll>
         </Col>

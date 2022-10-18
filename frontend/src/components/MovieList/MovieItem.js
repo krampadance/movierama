@@ -18,7 +18,9 @@ const getDescription = (id, firstName, lastName, created) => (
   <>
     Posted from{' '}
     <Link to={`/users/${id}`}>
-      {firstName} {lastName}
+      {firstName} 
+{' '}
+{lastName}
     </Link>{' '}
     {timeAgo(created)}
   </>
@@ -132,8 +134,7 @@ function MovieItem({
           />
           {movieCounts[item.id]?.hatesCount}
         </Space>
-      ]}
-    >
+      ]}>
       <List.Item.Meta
         title={item.title}
         description={getDescription(

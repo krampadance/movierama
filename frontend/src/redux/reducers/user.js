@@ -53,8 +53,8 @@ export default function (state = initialState, action) {
           [action.payload]: {
             ...state.movies[action.payload],
             likesCount: value + 1
-          }
-        }
+          },
+        },
       };
     }
     case ADD_HATE: {
@@ -66,8 +66,8 @@ export default function (state = initialState, action) {
           [action.payload]: {
             ...state.movies[action.payload],
             hatesCount: value + 1
-          }
-        }
+          },
+        },
       };
     }
     case REMOVE_HATE: {
@@ -82,8 +82,8 @@ export default function (state = initialState, action) {
           [action.payload]: {
             ...state.movies[action.payload],
             hatesCount: value - 1
-          }
-        }
+          },
+        },
       };
     }
     case REMOVE_LIKE: {
@@ -98,8 +98,8 @@ export default function (state = initialState, action) {
           [action.payload]: {
             ...state.movies[action.payload],
             likesCount: value - 1
-          }
-        }
+          },
+        },
       };
     }
     default:

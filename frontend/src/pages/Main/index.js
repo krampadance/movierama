@@ -38,7 +38,7 @@ const orderOptionsList = [
   {
     label: 'None',
     value: 'none'
-  }
+  },
 ];
 
 function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearState, setMovies }) {
@@ -101,9 +101,9 @@ function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
       movies.map(
         (m) =>
           (newObj[m.id] = {
-            likesCount: m.likes_count,
-            hatesCount: m.hates_count
-          })
+          likesCount: m.likes_count,
+          hatesCount: m.hates_count
+        }),
       );
       const newObject = movies
         .map((m) => ({
@@ -167,12 +167,14 @@ function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
         {user.accessToken !== undefined && (
           <Col span={8} offset={10}>
             <div>
-              Welcome <Link to={`users/${user.userId}`}>{user.userName}</Link> |
+              Welcome 
+{' '}
+<Link to={`users/${user.userId}`}>{user.userName}</Link> |
               <Button
                 onClick={() => {
-                  clearState();
-                  initData();
-                }}
+    clearState();
+    initData();
+  }}
               >
                 Logout
               </Button>
@@ -196,8 +198,7 @@ function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
             onChange={({ target: { value } }) => {
               setOrderDirection(value);
             }}
-            value={orderDirection}
-          >
+            value={orderDirection}>
             <Radio value="asc">Ascending</Radio>
             <Radio value="desc">Descending</Radio>
           </Radio.Group>
@@ -213,16 +214,14 @@ function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
             width: '100%',
             overflow: 'auto',
             padding: '0 16px'
-          }}
-        >
+          }}>
           <InfiniteScroll
             dataLength={data.length}
             next={() => loadMore(skip)}
             hasMore={!loaded}
             loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
             endMessage={<Divider plain>Loaded whole list</Divider>}
-            scrollableTarget="scrollableDiv"
-          >
+            scrollableTarget="scrollableDiv">
             <MovieList data={data} key={new Date().getTime()} />
           </InfiniteScroll>
         </Col>

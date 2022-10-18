@@ -1,5 +1,5 @@
-import moment from "moment";
-import { notification } from "antd";
+import moment from 'moment';
+import { notification } from 'antd';
 
 export const timeAgo = (date) => {
   const now = new Date();
@@ -12,6 +12,6 @@ export const timeAgo = (date) => {
 export const showError = (message, description) => {
   notification.error({
     message,
-    description,
+    description
   });
 };

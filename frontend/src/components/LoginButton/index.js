@@ -8,8 +8,7 @@ function LoginButton() {
     <Button
       onClick={() => {
         navigate('/login');
-      }}
-    >
+      }}>
       Login
     </Button>
   );

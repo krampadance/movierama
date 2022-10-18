@@ -32,8 +32,7 @@ function SignUp() {
           }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
+          autoComplete="off">
           <Form.Item
             label="Email"
             name="username"
@@ -43,9 +42,8 @@ function SignUp() {
                 // TODO: dont forget to tmove comment and in login
                 // type: "email",
                 message: 'Please input your email!'
-              }
-            ]}
-          >
+              },
+            ]}>
             <Input />
           </Form.Item>
 
@@ -56,9 +54,8 @@ function SignUp() {
               {
                 required: true,
                 message: 'Please input your password!'
-              }
-            ]}
-          >
+              },
+            ]}>
             <Input.Password />
           </Form.Item>
 
@@ -69,9 +66,8 @@ function SignUp() {
               {
                 required: true,
                 message: 'Please input your first name!'
-              }
-            ]}
-          >
+              },
+            ]}>
             <Input />
           </Form.Item>
           <Form.Item
@@ -81,9 +77,8 @@ function SignUp() {
               {
                 required: true,
                 message: 'Please input your last name!'
-              }
-            ]}
-          >
+              },
+            ]}>
             <Input />
           </Form.Item>
 
@@ -91,8 +86,7 @@ function SignUp() {
             wrapperCol={{
               offset: 8,
               span: 16
-            }}
-          >
+            }}>
             <Button type="primary" htmlType="submit">
               Sign up
             </Button>

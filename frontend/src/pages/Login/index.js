@@ -34,8 +34,7 @@ function Login({ setAccessToken }) {
             span: 16
           }}
           onFinish={onFinish}
-          autoComplete="off"
-        >
+          autoComplete="off">
           <Form.Item
             label="Email"
             name="username"
@@ -44,9 +43,8 @@ function Login({ setAccessToken }) {
                 required: true,
                 // type: "email",
                 message: 'Please input your email!'
-              }
-            ]}
-          >
+              },
+            ]}>
             <Input />
           </Form.Item>
 
@@ -57,9 +55,8 @@ function Login({ setAccessToken }) {
               {
                 required: true,
                 message: 'Please input your password!'
-              }
-            ]}
-          >
+              },
+            ]}>
             <Input.Password />
           </Form.Item>
 
@@ -67,8 +64,7 @@ function Login({ setAccessToken }) {
             wrapperCol={{
               offset: 8,
               span: 16
-            }}
-          >
+            }}>
             <Button type="primary" htmlType="submit">
               Login
             </Button>

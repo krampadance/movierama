@@ -7,7 +7,8 @@ export const getMovies = async (skip, limit, orderBy, direction = 'asc') => {
     return axios.get(`${apiUrl}/movies/?skip=${skip}&limit=${limit}&direction=${direction}`);
   }
   if (orderBy === 'created_at') {
-    // Revert order direction when created_at is chosen because we render the period that the movie was created
+    // Revert order direction when created_at is chosen because we
+    // render the period that the movie was created
     direction = direction === 'asc' ? 'desc' : 'asc';
   }
   return axios.get(
@@ -16,28 +17,30 @@ export const getMovies = async (skip, limit, orderBy, direction = 'asc') => {
 };
 
 export const getUserData = async (token) =>
-  axios.get(`${apiUrl}/users/me/`, { headers: { Authorization: `Bearer ${token}` } });
+  axios.get(`${apiUrl}/users/me/`, {
+  headers: { Authorization: `Bearer ${token}` }
+});
 
 export const addMovie = async (title, description, token) =>
   axios.post(
-    `${apiUrl}/movies/`,
-    { title, description },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+  `${apiUrl}/movies/`,
+  { title, description },
+  { headers: { Authorization: `Bearer ${token}` } }
+);
 
 export const addMovieLike = async (movieId, token) =>
   axios.post(
-    `${apiUrl}/movies/${movieId}/vote/`,
-    { likes: true },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+  `${apiUrl}/movies/${movieId}/vote/`,
+  { likes: true },
+  { headers: { Authorization: `Bearer ${token}` } }
+);
 
 export const addMovieHate = async (movieId, token) =>
   axios.post(
-    `${apiUrl}/movies/${movieId}/vote/`,
-    { likes: false },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+  `${apiUrl}/movies/${movieId}/vote/`,
+  { likes: false },
+  { headers: { Authorization: `Bearer ${token}` } }
+);
 
 export const getUserMovies = async (userId, skip, limit, orderBy, direction) => {
   if (orderBy === 'none') {
@@ -56,18 +59,18 @@ export const getUserMovies = async (userId, skip, limit, orderBy, direction) => 
 
 export const signup = async (email, password, firstName, lastName) =>
   axios.post(`${apiUrl}/auth/signup/`, {
-    email,
-    password,
-    first_name: firstName,
-    last_name: lastName
-  });
+  email,
+  password,
+  first_name: firstName,
+  last_name: lastName
+});
 
 export const login = async (email, password) =>
   axios.post(
-    `${apiUrl}/auth/login/`,
-    {
-      username: email,
-      password
-    },
-    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-  );
+  `${apiUrl}/auth/login/`,
+  {
+    username: email,
+    password
+  },
+  { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+);

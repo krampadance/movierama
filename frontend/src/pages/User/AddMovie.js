@@ -36,8 +36,7 @@ function AddMovie({ accessToken }) {
             span: 16
           }}
           onFinish={onFinish}
-          autoComplete="off"
-        >
+          autoComplete="off">
           <Form.Item
             label="Title"
             name="title"
@@ -45,9 +44,8 @@ function AddMovie({ accessToken }) {
               {
                 required: true,
                 message: 'Please enter a movie title'
-              }
-            ]}
-          >
+              },
+            ]}>
             <Input />
           </Form.Item>
 
@@ -58,9 +56,8 @@ function AddMovie({ accessToken }) {
               {
                 required: true,
                 message: 'Please enter a movie description'
-              }
-            ]}
-          >
+              },
+            ]}>
             <Input />
           </Form.Item>
 
@@ -68,8 +65,7 @@ function AddMovie({ accessToken }) {
             wrapperCol={{
               offset: 8,
               span: 16
-            }}
-          >
+            }}>
             <Button type="primary" htmlType="submit">
               Add Movie
             </Button>
