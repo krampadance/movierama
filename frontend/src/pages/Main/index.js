@@ -1,4 +1,4 @@
-import { Divider, Skeleton, Button, Row, Col, Radio, List} from 'antd';
+import { Divider, Skeleton, Button, Row, Col, Radio } from 'antd';
 import React, { useEffect, useState } from 'react';
 import './Main.css';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import SignUpButton from '../../components/SignUpButton';
 import { showError } from '../../utils';
 import { connect } from 'react-redux'
-import { setUserId, setUserName, setUserHates, setUserLikes, clearState } from '../../redux/actions';
+import { setUserId, setUserName, setUserHates, setUserLikes, clearState, setMovies } from '../../redux/actions';
 
 
 const orderOptionsList = [
@@ -33,8 +33,7 @@ const orderOptionsList = [
   ];
 
 
-const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearState }) => {
-    const [initLoading, setInitLoading] = useState(true);
+const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearState, setMovies }) => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const [skip, setSkip] = useState(0);
@@ -48,7 +47,6 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
       loadUserData();
       initData();
       setSkip(limit)
-      setInitLoading(false);
     }, []);
 
     useEffect(() => {
@@ -85,6 +83,9 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
         const res = await getMovies(0, limit, orderOption, orderDirection)
         const movies = res.data;
         setData(movies)
+        let moviesObject = user.movies
+        movies.map((m) => { moviesObject[m.id] = { likesCount: m.likes_count, hatesCount: m.hates_count } })
+        setMovies(moviesObject)
         setLoading(false)
         setLoaded(false)
       } catch (e) {
@@ -105,6 +106,9 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
           setLoaded(true)
         }
         setData(data.concat(movies))
+        let moviesObject = user.movies
+        movies.map((m) => { moviesObject[m.id] = { likesCount: m.likes_count, hatesCount: m.hates_count } })
+        setMovies(moviesObject)
         setLoading(false)
       } catch (e) {
         setLoading(false)
@@ -123,6 +127,7 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
               <div>Welcome <Link to={`users/${user.userId}`}>{user.userName}</Link> | 
               <a onClick={() => {
                 clearState()
+                initData()
               }}>Logout</a></div>
             </Col>
           )
@@ -185,5 +190,5 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
     };
   }
 
-  export default connect(mapStateToProps, { setUserId, setUserName, setUserLikes, setUserHates, clearState })(Main);
+  export default connect(mapStateToProps, { setUserId, setUserName, setUserLikes, setUserHates, clearState, setMovies })(Main);
   

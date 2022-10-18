@@ -20,11 +20,11 @@ export const addMovie = async (title, description, token) => {
     return axios.post(`${api_url}/movies/`, { title, description },{'headers': {'Authorization': `Bearer ${token}`}})
 }
 
-export const addLike = async (movieId, token) => {
+export const addMovieLike = async (movieId, token) => {
     return axios.post(`${api_url}/movies/${movieId}/vote/`, { likes: true },{'headers': {'Authorization': `Bearer ${token}`}})
 }
 
-export const addHate = async (movieId, token) => {
+export const addMovieHate = async (movieId, token) => {
     return axios.post(`${api_url}/movies/${movieId}/vote/`, { likes: false },{'headers': {'Authorization': `Bearer ${token}`}})
 }
 
