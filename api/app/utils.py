@@ -27,13 +27,16 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, Config.SECRET_KEY, algorithm=Config.JWT_ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, Config.SECRET_KEY,
+                             algorithm=Config.JWT_ALGORITHM)
     return encoded_jwt
+
 
 def verify_token(token: str) -> TokenData:
     """Verifies that token has sub key in payload, check if it hasn't expired and returns the token data included in the token"""
     try:
-        payload = jwt.decode(token, Config.SECRET_KEY, algorithms=[Config.JWT_ALGORITHM])
+        payload = jwt.decode(token, Config.SECRET_KEY,
+                             algorithms=[Config.JWT_ALGORITHM])
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
@@ -41,9 +44,10 @@ def verify_token(token: str) -> TokenData:
     except JWTError:
         raise credentials_exception
 
+
 # Credentials exception TODO: Move it to a better place
 credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Could not validate credentials",
+    headers={"WWW-Authenticate": "Bearer"},
 )

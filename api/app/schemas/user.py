@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 from .vote import Vote
 
+
 class UserBase(BaseModel):
     email: str
 
@@ -22,8 +23,10 @@ class User(UserBase):
     class Config:
         orm_mode = True
 
+
 class UserVotes(User):
     votes: List[Vote] = []
+
 
 class UserData(User):
     liked_movies: List[int] = []

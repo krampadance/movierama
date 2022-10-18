@@ -26,7 +26,8 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_user(db: Session, user: UserCreate) -> User:
-    db_user = User(email=user.email, hashed_password=get_hashed_password(user.password), first_name=user.first_name, last_name=user.last_name)
+    db_user = User(email=user.email, hashed_password=get_hashed_password(
+        user.password), first_name=user.first_name, last_name=user.last_name)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -34,9 +35,9 @@ def create_user(db: Session, user: UserCreate) -> User:
 
 
 def get_user_movies(db: Session, user_id: int, order_by: Union[str, None], direction: str = 'asc', skip: int = 0, limit: int = 1000):
-    query = db.query(Movie).filter(Movie.user_id==user_id)
+    query = db.query(Movie).filter(Movie.user_id == user_id)
     if order_by is None:
-        return query.order_by( Movie.id.asc()).offset(skip).limit(limit).all()
+        return query.order_by(Movie.id.asc()).offset(skip).limit(limit).all()
     if direction == 'asc':  # The extra order by id is added because when multiple movies have same value, results can be skipped because of the limit
         return query.order_by(get_order_by_clause(order_by, direction), Movie.id.asc()).offset(skip).limit(limit).all()
     return query.order_by(get_order_by_clause(order_by, direction), Movie.id.asc()).offset(skip).limit(limit).all()
@@ -52,7 +53,7 @@ def authenticate_user(db: Session, username: str, password: str):
 
 
 def get_current_user(db: Session, token: str) -> UserData:
-    token_data : TokenData = verify_token(token)
+    token_data: TokenData = verify_token(token)
     user = get_user_by_email(db, email=token_data.email)
     if user is None:
         raise credentials_exception
@@ -61,6 +62,8 @@ def get_current_user(db: Session, token: str) -> UserData:
         email=user.email,
         first_name=user.first_name,
         last_name=user.last_name,
-        liked_movies=[vote.movie_id for vote in user.votes if vote.is_like is True],
-        hated_movies=[vote.movie_id for vote in user.votes if vote.is_like is False]
+        liked_movies=[
+            vote.movie_id for vote in user.votes if vote.is_like is True],
+        hated_movies=[
+            vote.movie_id for vote in user.votes if vote.is_like is False]
     )
