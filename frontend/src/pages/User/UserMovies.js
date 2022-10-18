@@ -1,26 +1,83 @@
-import { Divider, Skeleton, Row, Col} from 'antd';
+import { Divider, Skeleton, Button, Row, Col, Radio, List} from 'antd';
+import { LikeOutlined, DislikeOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import MovieList from '../../components/MovieList';
+import IconText from '../../components/IconText';
 import LoginButton from '../../components/LoginButton';
-import SignUpButton from '../../components/SignUpButton';
-import { getUserMovies } from '../../services/apiCalls';
-import { useParams } from 'react-router-dom'
-import { getUserData } from '../../services/apiCalls';
+import { getUserMovies, getUserData } from '../../services/apiCalls';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import SignUpButton from '../../components/SignUpButton';
 import { showError } from '../../utils';
 import { connect } from 'react-redux'
 import { setUserId, setUserName, setUserHates, setUserLikes, clearState } from '../../redux/actions';
+import { useParams } from 'react-router-dom'
 
-const UserMovies = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearState }) => {
+import { timeAgo } from '../../utils';
+
+
+const orderOptionsList = [
+    {
+      label: 'Likes',
+      value: 'likes_count',
+    },
+    {
+      label: 'Hates',
+      value: 'hates_count',
+    },
+    {
+      label: 'Date',
+      value: 'created_at',
+    },
+    {
+      label: 'None',
+      value: 'none',
+    },
+  ];
+
+const getDescription = (id, firstName, lastName, created) => {
+  return (
+      <>
+      Posted from <Link to={`/users/${id}`}>{firstName} {lastName}</Link> {timeAgo(created)}
+      </>
+  )
+}
+
+const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearState }) => {
+    const [initLoading, setInitLoading] = useState(true);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const [skip, setSkip] = useState(0);
     const [loaded, setLoaded] = useState(false);
-    const [orderOption, setOrderOption] = useState("likes_count")
-    const limit = 5;
+    const [orderDirection, setOrderDirection] = useState("desc")
+    const [orderOption, setOrderOption] = useState('none');
+    const [pageStart, setPageStart] = useState(0)
+    const navigate = useNavigate();
 
-    let { id } = useParams();
+    const limit = 2;
+    const { id } = useParams();
+
+
+    useEffect(() => {
+      loadUserData();
+      initData();
+      setSkip(limit)
+      setInitLoading(false);
+    }, []);
+
+    useEffect(() => {
+      setPageStart(pageStart === 0 ? -1 : 0)
+      initData()
+      setSkip(limit)
+    }, [orderOption]);
+
+    useEffect(() => {
+      setPageStart(pageStart === 0 ? -1 : 0)
+      initData()
+      setSkip(limit)
+    }, [orderDirection]);
+
 
     const loadUserData = async () => {
       if (user.accessToken === undefined) {
@@ -35,35 +92,42 @@ const UserMovies = ({ user, setUserId, setUserName, setUserHates, setUserLikes, 
       } catch (e){
         showError("Error loading user data", e.response.data.detail || e)
       }
-  }
-
-  const loadMoreData = async () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    try {
-      const res = await getUserMovies(id, skip, limit, orderOption, 'desc')
-      const movies = res.data;
-      if (movies.length !== 0) {
-        setSkip(skip + limit)
-      } 
-      if (movies.length < limit) {
-        setLoaded(true)
+   }
+  
+    const initData = async () => {
+      setData([])
+      setLoading(true)
+      setSkip(0)
+      try {
+        const res = await getUserMovies(id, 0, limit, orderOption, orderDirection)
+        const movies = res.data;
+        setData(movies)
+        setLoading(false)
+        setLoaded(false)
+      } catch (e) {
+        setLoading(false)
+        showError("Error loading movie data", e.response.data.detail || e)
       }
-      setData([...data, ...movies])
-      setLoading(false)
-    } catch (e) {
-      setLoading(false)
-      showError("Error loading movie data", e.response.data.detail || e)
     }
-  };
 
-  useEffect(() => {
-    loadUserData();
-    loadMoreData();
-  }, []);
-    
+    const loadMore = async () => {     
+      setLoading(true)
+      try {
+        const res = await getUserMovies(id, skip, limit, orderOption, orderDirection)
+        const movies = res.data;
+        if (movies.length !== 0) {
+          setSkip(skip + limit)
+        }
+        if (movies.length < limit) {
+          setLoaded(true)
+        }
+        setData(data.concat(movies))
+        setLoading(false)
+      } catch (e) {
+        setLoading(false)
+        showError("Error loading movie data", e.response.data.detail || e)
+      }
+    }
 
     return (
      <>
@@ -81,43 +145,63 @@ const UserMovies = ({ user, setUserId, setUserName, setUserHates, setUserLikes, 
           )
         }
       </Row>
+      <Row>
+      <Col>Order By</Col>
+      <Col offset={2}>
+        <Radio.Group 
+          options={orderOptionsList} 
+          onChange={({ target: { value } }) => {
+            setOrderOption(value)
+          }}
+          value={orderOption} optionType="button" />
+
+        <Radio.Group
+          onChange={({ target: { value } }) => {
+            setOrderDirection(value)
+          }}
+          value={orderDirection}>
+              <Radio value={'asc'}>Ascending</Radio>
+              <Radio value={'desc'}>Descending</Radio>
+        </Radio.Group>
+      </Col>
+      </Row>
       
       <Row>
-        <Col id="scrollableDiv" style={{
-            height: '400px',
-            width: '60%',
+      <Col
+          id="scrollableDiv"
+          span={12}
+          style={{
+            height: 400,
+            width: '100%',
             overflow: 'auto',
-            padding: '8px 24px',
-          }}>
-            <InfiniteScroll
+            padding: '0 16px',
+          }}
+        >
+        <InfiniteScroll
           dataLength={data.length}
-          next={loadMoreData}
-          hasMore={loaded == false}
-          loader={
-            <Skeleton
-              paragraph={{
-                rows: 1,
-              }}
-              active
-            />
-          }
-          endMessage={<Divider plain>End of list</Divider>}
+          next={loadMore}
+          loadMore={loadMore}
+          hasMore={!loaded}
+          loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
+          endMessage={<Divider plain>Loaded whole list</Divider>}
           scrollableTarget="scrollableDiv"
         >
-          <MovieList data={data}/>
+        <MovieList data={data}/>
         </InfiniteScroll>
-        </Col>
-        <Col>
+      </Col>
+        <Col span={12}>
+        {user.accessToken !== undefined && <Button type='primary' onClick={() => navigate("/users/addMovie")}>Add Movie</Button>}
         </Col>
       </Row>
       </>
     );
   };
-  
+
   const mapStateToProps = state => {
     return { 
       user: state,
     };
   }
 
-  export default connect(mapStateToProps, { setUserId, setUserName, setUserLikes, setUserHates, clearState })(UserMovies);
+  export default connect(mapStateToProps, { setUserId, setUserName, setUserLikes, setUserHates, clearState })(Main);
+  

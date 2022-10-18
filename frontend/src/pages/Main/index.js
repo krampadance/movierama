@@ -1,10 +1,8 @@
 import { Divider, Skeleton, Button, Row, Col, Radio, List} from 'antd';
-import { LikeOutlined, DislikeOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import './Main.css';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import MovieList from '../../components/MovieList';
-import IconText from '../../components/IconText';
 import LoginButton from '../../components/LoginButton';
 import { getMovies, getUserData } from '../../services/apiCalls';
 import { Link } from 'react-router-dom';
@@ -13,8 +11,6 @@ import SignUpButton from '../../components/SignUpButton';
 import { showError } from '../../utils';
 import { connect } from 'react-redux'
 import { setUserId, setUserName, setUserHates, setUserLikes, clearState } from '../../redux/actions';
-
-import { timeAgo } from '../../utils';
 
 
 const orderOptionsList = [
@@ -36,13 +32,6 @@ const orderOptionsList = [
     },
   ];
 
-const getDescription = (id, firstName, lastName, created) => {
-  return (
-      <>
-      Posted from <Link to={`/users/${id}`}>{firstName} {lastName}</Link> {timeAgo(created)}
-      </>
-  )
-}
 
 const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearState }) => {
     const [initLoading, setInitLoading] = useState(true);
@@ -91,6 +80,7 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
   
     const initData = async () => {
       setLoading(true)
+      setData([])
       setSkip(0)
       try {
         const res = await getMovies(0, limit, orderOption, orderDirection)
@@ -104,14 +94,14 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
       }
     }
 
-    const loadMore = async () => {
+    const loadMore = async () => {     
       setLoading(true)
       try {
         const res = await getMovies(skip, limit, orderOption, orderDirection)
         const movies = res.data;
         if (movies.length !== 0) {
           setSkip(skip + limit)
-        } 
+        }
         if (movies.length < limit) {
           setLoaded(true)
         }
@@ -161,9 +151,9 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
       </Row>
       
       <Row>
-      <Col span={10}>
-        <div
+      <Col
           id="scrollableDiv"
+          span={12}
           style={{
             height: 400,
             width: '100%',
@@ -179,50 +169,10 @@ const Main = ({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
           endMessage={<Divider plain>Loaded whole list</Divider>}
           scrollableTarget="scrollableDiv"
         >
-        
-          <List
-          style={{
-            lineHeight: '32px',
-            height: "auto",
-          }}
-          itemLayout="vertical"
-          dataSource={data}
-          renderItem={(item) => {
-            return (
-              <List.Item
-                  style={{margin: "10%"}}
-                  key={item.id}
-                  actions={[
-                      <IconText 
-                          icon={LikeOutlined}
-                          text={item.likes_count}
-                          ownerId={item.owner.id}
-                          movieId={item.id}
-                          key="list-vertical-like-o"
-                      />,
-                      <IconText 
-                          icon={DislikeOutlined}
-                          text={item.hates_count}
-                          ownerId={item.owner.id}
-                          movieId={item.id}
-                          key="list-vertical-like-o"
-                      />,
-                  ]}
-              >
-              <List.Item.Meta
-                  title={item.title}
-                  description={getDescription(item.owner.id, item.owner.first_name, item.owner.last_name, item.created_at)}
-              />
-              <div>{item.description}</div>
-              </List.Item>
-          )}}
-          />
+          <MovieList data={data}/>
         </InfiniteScroll>
-        </div>
-        <Row>
-        </Row>
-        </Col>
-        <Col>
+      </Col>
+      <Col span={12}>
         {user.accessToken !== undefined && <Button type='primary' onClick={() => navigate("/users/addMovie")}>Add Movie</Button>}
         </Col>
       </Row>
