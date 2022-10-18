@@ -2,16 +2,16 @@ import { Button } from 'antd';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
-
-const LoginButton = () => {
-    const navigate = useNavigate();
-    return (
-        <Button
-            onClick={() => {
-                navigate('/login')
-            }}
-        >Login</Button>
+function LoginButton() {
+  const navigate = useNavigate();
+  return (
+    <Button
+      onClick={() => {
+        navigate('/login');
+      }}
+    >
+      Login
+    </Button>
   );
 }
 

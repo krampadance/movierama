@@ -2,17 +2,14 @@ import { List } from 'antd';
 import React from 'react';
 import MovieItem from './MovieItem';
 
+function MovieList({ data }) {
+  return (
+    <List
+      itemLayout="vertical"
+      dataSource={data}
+      renderItem={(item) => <MovieItem item={item} />}
+    />
+  );
+}
 
-const MovieList = ({ data }) => {
-    return (
-        <List
-            itemLayout="vertical"
-            dataSource={data}
-            renderItem={(item) => { return (<MovieItem item={item}></MovieItem>) }
-        }
-        />
-    );
-  };
-
-  export default MovieList;
-  
+export default MovieList;
