@@ -48,9 +48,9 @@ def get_all_movies(db: Session, order_by: Union[str, None], direction: str='asc'
     query = db.query(Movie)
     if order_by is None:
         return query.offset(skip).limit(limit).all()
-    if direction == 'asc':
-        return query.order_by(get_order_by_clause(order_by, direction)).offset(skip).limit(limit).all()
-    return query.order_by(get_order_by_clause(order_by, direction)).offset(skip).limit(limit).all()
+    if direction == 'asc':  # The extra order by id is added because when multiple movies have same value, results can be skipped because of the limit
+        return query.order_by(get_order_by_clause(order_by, direction), Movie.id.asc()).offset(skip).limit(limit).all()
+    return query.order_by(get_order_by_clause(order_by, direction), Movie.id.asc()).offset(skip).limit(limit).all()
 
 
 def create_user_movie(db: Session, movie: MovieCreate, user_id: int) -> Movie:
