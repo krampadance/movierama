@@ -15,7 +15,7 @@ Install the requirements,
 `pip3 install -r requirements.txt`
 
 Start postgres in movierama directory
-`docker-compose up`
+`docker-compose up -postgres`
 
 Run,
 `uvicorn app.main:app --reload`
