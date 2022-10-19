@@ -96,6 +96,7 @@ function MovieItem({
   };
 
   useEffect(() => {
+    // Set the corrects colors on the buttons when user updates(Logs in/out)
     setLikeIconColor(userLikes.includes(item.id) ? 'blue' : 'black');
     setDislikeIconColor(userHates.includes(item.id) ? 'blue' : 'black');
   }, [userId]);
