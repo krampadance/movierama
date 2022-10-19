@@ -1,4 +1,4 @@
-import { Divider, Skeleton, Button, Row, Col, Radio, List } from 'antd';
+import { Divider, Skeleton, Button, Row, Col, Radio } from 'antd';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -35,8 +35,9 @@ const orderOptionsList = [
   },
 ];
 
+const limit = process.env.REACT_APP_QUERY_LIMIT || 2
+
 function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearState }) {
-  const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [skip, setSkip] = useState(0);
@@ -44,7 +45,6 @@ function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
   const [orderDirection, setOrderDirection] = useState('desc');
   const [orderOption, setOrderOption] = useState('none');
   const [pageStart, setPageStart] = useState(0);
-  const [limit, setLimit] = useState(process.env.REACT_APP_QUERY_LIMIT || 2);
   const navigate = useNavigate();
 
   const { id } = useParams();
@@ -53,7 +53,6 @@ function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
     loadUserData();
     initData();
     setSkip(limit);
-    setInitLoading(false);
   }, []);
 
   useEffect(() => {
@@ -84,6 +83,9 @@ function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
   };
 
   const initData = async () => {
+    if (loading) {
+      console.log(1)
+    }
     setData([]);
     setLoading(true);
     setSkip(0);

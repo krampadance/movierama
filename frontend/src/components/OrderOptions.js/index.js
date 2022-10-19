@@ -16,8 +16,7 @@ const options = [
   },
 ];
 
-function OrderOptions() {
-  const { orderOption, setOrderOption } = useOrderOption();
+function OrderOptions({ orderOption, setOrderOption }) {
 
   const selectOrderOption = ({ target: { value } }) => {
     setOrderOption(value);

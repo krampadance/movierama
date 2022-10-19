@@ -28,7 +28,6 @@ const getDescription = (id, firstName, lastName, created) => (
 
 function MovieItem({
   item,
-  ownerId,
   userLikes,
   userHates,
   userId,
@@ -106,7 +105,7 @@ function MovieItem({
       style={{ margin: '10%' }}
       key={item.id}
       actions={[
-        <Space>
+        <Space key={`space-like-${item.id}`}>
           <Button
             type="primary"
             ghost
@@ -120,7 +119,7 @@ function MovieItem({
           />
           {movieCounts[item.id]?.likesCount}
         </Space>,
-        <Space>
+        <Space key={`space-like-${item.id}`}>
           <Button
             type="primary"
             ghost

@@ -43,7 +43,7 @@ function Login({ setAccessToken }) {
                 required: true,
                 // type: "email",
                 message: 'Please input your email!'
-              },
+              }
             ]}>
             <Input />
           </Form.Item>
@@ -55,7 +55,7 @@ function Login({ setAccessToken }) {
               {
                 required: true,
                 message: 'Please input your password!'
-              },
+              }
             ]}>
             <Input.Password />
           </Form.Item>

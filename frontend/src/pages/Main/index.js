@@ -38,7 +38,7 @@ const orderOptionsList = [
   {
     label: 'None',
     value: 'none'
-  },
+  }
 ];
 
 function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearState, setMovies }) {
@@ -101,18 +101,10 @@ function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
       movies.map(
         (m) =>
           (newObj[m.id] = {
-          likesCount: m.likes_count,
-          hatesCount: m.hates_count
-        }),
+            likesCount: m.likes_count,
+            hatesCount: m.hates_count
+          })
       );
-      const newObject = movies
-        .map((m) => ({
-          likesCount: m.likes_count,
-          hatesCount: m.hates_count,
-          id: m.id
-        }))
-        .reduce((a, i) => ({ ...a, [i.id]: i }), {});
-
       setMovies({ ...moviesObject, ...newObj });
       setLoading(false);
     } catch (e) {
@@ -167,15 +159,12 @@ function Main({ user, setUserId, setUserName, setUserHates, setUserLikes, clearS
         {user.accessToken !== undefined && (
           <Col span={8} offset={10}>
             <div>
-              Welcome 
-{' '}
-<Link to={`users/${user.userId}`}>{user.userName}</Link> |
+              Welcome <Link to={`users/${user.userId}`}>{user.userName}</Link> |
               <Button
                 onClick={() => {
-    clearState();
-    initData();
-  }}
-              >
+                  clearState();
+                  initData();
+                }}>
                 Logout
               </Button>
             </div>
