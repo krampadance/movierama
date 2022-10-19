@@ -17,7 +17,8 @@ class Movie(Base):
     title = Column(String)
     description = Column(String)
     owner = relationship("User", back_populates="movies")
-    created_at = Column(DateTime(timezone=False), default=datetime.datetime.utcnow())
+    created_at = Column(DateTime(timezone=False),
+                        default=datetime.datetime.utcnow())
 
     # Calculating aggregate count value of related models and save them to parent model
     @aggregated('likes', Column(Integer, default=0))

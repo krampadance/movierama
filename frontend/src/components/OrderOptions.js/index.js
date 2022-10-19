@@ -1,34 +1,53 @@
-import { Radio, Col } from 'antd';
-import React, { useState } from 'react';
-import useOrderOption from '../../Hooks/useOrderOption';
+import { Radio, Col, Row, Space } from 'antd';
+import React from 'react';
 
-const options = [
+const orderOptionsList = [
   {
     label: 'Likes',
-    value: 'likes_count',
+    value: 'likes_count'
   },
   {
     label: 'Hates',
-    value: 'hates_count',
+    value: 'hates_count'
   },
   {
     label: 'Date',
-    value: 'created_at',
+    value: 'created_at'
   },
+  {
+    label: 'None',
+    value: 'none'
+  }
 ];
 
-const OrderOptions = () => {
-  const {orderOption, setOrderOption} = useOrderOption();
-  
-  const selectOrderOption = ({ target: { value } }) => {
-    setOrderOption(value);
-  };
-  
+function OrderOptions({ orderOption, setOrderOption, orderDirection, setOrderDirection }) {
   return (
-    <>
-      <Col>Order By</Col>
-      <Col offset={2}><Radio.Group options={options} onChange={selectOrderOption} value={orderOption} optionType="button" /></Col>
-    </>
+    <div className="orderOptions">
+      <Row>
+        <Col>
+          <Space>
+            Order By: ,
+            <Radio.Group
+              options={orderOptionsList}
+              onChange={({ target: { value } }) => {
+                setOrderOption(value);
+              }}
+              value={orderOption}
+              optionType="button"
+            />
+            ,
+            <Radio.Group
+              onChange={({ target: { value } }) => {
+                setOrderDirection(value);
+              }}
+              value={orderDirection}>
+              <Radio value="asc">Ascending</Radio>
+              <Radio value="desc">Descending</Radio>
+            </Radio.Group>
+          </Space>
+        </Col>
+      </Row>
+    </div>
   );
-};
+}
 export default OrderOptions;

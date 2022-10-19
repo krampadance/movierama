@@ -27,8 +27,10 @@ def add_vote(db: Session, movie_id: int, user_id: int, likes: bool):
     if movie is None:
         raise HTTPException(status_code=404, detail="Movie not found")
     if movie.user_id == user_id:
-        raise HTTPException(status_code=403, detail="User cannot vote own movies")
-    db_vote = db.query(Vote).filter(Vote.movie_id == movie_id, Vote.user_id == user_id).first()
+        raise HTTPException(
+            status_code=403, detail="User cannot vote own movies")
+    db_vote = db.query(Vote).filter(
+        Vote.movie_id == movie_id, Vote.user_id == user_id).first()
     if db_vote is not None:
         if db_vote.is_like == likes:  # If user already likes/hates delete existing vote
             db.delete(db_vote)
@@ -44,7 +46,7 @@ def add_vote(db: Session, movie_id: int, user_id: int, likes: bool):
     return db_vote
 
 
-def get_all_movies(db: Session, order_by: Union[str, None], direction: str='asc', skip: int = 0, limit: int = 1000):
+def get_all_movies(db: Session, order_by: Union[str, None], direction: str = 'asc', skip: int = 0, limit: int = 1000):
     query = db.query(Movie)
     if order_by is None:
         return query.order_by(Movie.id.asc()).offset(skip).limit(limit).all()
@@ -54,7 +56,8 @@ def get_all_movies(db: Session, order_by: Union[str, None], direction: str='asc'
 
 
 def create_user_movie(db: Session, movie: MovieCreate, user_id: int) -> Movie:
-    db_movie = Movie(**movie.dict(), user_id=user_id, created_at=datetime.datetime.utcnow())
+    db_movie = Movie(**movie.dict(), user_id=user_id,
+                     created_at=datetime.datetime.utcnow())
     db.add(db_movie)
     db.commit()
     db.refresh(db_movie)

@@ -6,18 +6,18 @@ import SignUp from './pages/SignUp';
 import AddMovie from './pages/User/AddMovie';
 import UserMovies from './pages/User/UserMovies';
 
+// TODO: Make addMovie route private
 function App() {
   return (
-    <div className='wrapper'>
-    <BrowserRouter>
+    <div className="wrapper">
+      <BrowserRouter>
         <Routes>
-        <Route path="/" element={<Main />}/>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/users/:id" element={<UserMovies />} />
-        <Route path="/users/addMovie" element={<AddMovie />} />
-
-        </Routes> 
+          <Route path="/" element={<Main />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/users/:id" element={<UserMovies />} />
+          <Route path="/users/addMovie" element={<AddMovie />} />
+        </Routes>
       </BrowserRouter>
     </div>
   );

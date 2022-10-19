@@ -31,6 +31,7 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(movies.router)
 
+
 @app.get("/")
 async def root():
     return "{}:{}".format(Config.NAME, Config.VERSION)
