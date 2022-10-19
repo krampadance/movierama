@@ -55,6 +55,8 @@ function Dashboard({
         : await getMovies(0, limit, orderOption, orderDirection);
       const movies = res.data;
       setData(movies);
+      // Set the movie votes on the store so that we can update the frontend when
+      // a user likes/dislikes a movie
       const moviesVotesObject = votes.movies;
       movies.map((m) => {
         moviesVotesObject[m.id] = {
@@ -66,16 +68,19 @@ function Dashboard({
       setLoaded(false);
       setLoading(false);
     } catch (e) {
+      setLoading(false);
       showError('Error loading movie data', e.response.data.detail || e);
     }
   };
 
   const loadMore = async (skipApi) => {
+    // Loads more data for the infinite scroller
     if (loading) {
       return;
     }
     try {
       setLoading(true);
+      // Select correct api call based on whether we are in main page or a user's page
       const res = selectedUser
         ? await getUserMovies(selectedUser, skipApi, limit, orderOption, orderDirection)
         : await getMovies(skipApi, limit, orderOption, orderDirection);
@@ -87,6 +92,8 @@ function Dashboard({
         setLoaded(true);
       }
       setData(data.concat(movies));
+      // Set the movie votes on the store so that we can update the frontend when
+      // a user likes/dislikes a movie
       const moviesObject = votes.movies;
       const newObj = {};
       movies.map(
@@ -99,11 +106,13 @@ function Dashboard({
       setMovieVotes({ ...moviesObject, ...newObj });
       setLoading(false);
     } catch (e) {
+      setLoading(false);
       showError('Error loading movie data', e.response.data.detail || e);
     }
   };
 
   useEffect(() => {
+    // When logging in we collect the user data and set it in the store
     const loadUserData = async () => {
       if (user.accessToken === undefined) {
         return;
@@ -120,6 +129,7 @@ function Dashboard({
     };
 
     loadUserData();
+    // We collect the initial data for the infinite scroller component
     initData();
     setSkip(limit);
   }, []);

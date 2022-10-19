@@ -6,6 +6,7 @@ import SignUp from './pages/SignUp';
 import AddMovie from './pages/User/AddMovie';
 import UserMovies from './pages/User/UserMovies';
 
+// TODO: Make addMovie route private
 function App() {
   return (
     <div className="wrapper">

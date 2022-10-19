@@ -19,14 +19,14 @@ const orderOptionsList = [
     value: 'none'
   }
 ];
+
 function OrderOptions({ orderOption, setOrderOption, orderDirection, setOrderDirection }) {
   return (
     <div className="orderOptions">
       <Row>
         <Col>
           <Space>
-            Order By:
-            ,
+            Order By: ,
             <Radio.Group
               options={orderOptionsList}
               onChange={({ target: { value } }) => {

@@ -44,8 +44,7 @@ function SignUp() {
               rules={[
                 {
                   required: true,
-                  // TODO: dont forget to tmove comment and in login
-                  // type: "email",
+                  type: 'email',
                   message: 'Please input your email!'
                 }
               ]}>

@@ -48,7 +48,7 @@ function Login({ setAccessToken }) {
               rules={[
                 {
                   required: true,
-                  // type: "email",
+                  type: 'email',
                   message: 'Please input your email!'
                 }
               ]}>
