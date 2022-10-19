@@ -19,7 +19,6 @@ and you can also use
 
 # Issues
 * No private routes
-* When clicking on votes it somehow looks like it refreshes all vote colors(flickering)
 * No validation on password, or rules for the password
 
 # Environment variables

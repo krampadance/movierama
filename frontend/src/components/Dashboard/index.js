@@ -179,7 +179,7 @@ function Dashboard({
             loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
             endMessage={<Divider plain>Loaded whole list</Divider>}
             scrollableTarget="scrollableDiv">
-            <MovieList data={data} key={new Date().getTime()} />
+            <MovieList data={data} />
           </InfiniteScroll>
         </Col>
       </Row>
