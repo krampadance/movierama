@@ -1,4 +1,4 @@
-.haeder {
+.header {
   padding: 10px;
 }
 
@@ -11,4 +11,9 @@
 
 a.logo {
   color: black;
+}
+
+.orderOptions {
+  padding: 10px;
+  margin: 10px;
 }

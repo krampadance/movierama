@@ -1,4 +1,4 @@
-import { Radio, Col, Row } from 'antd';
+import { Radio, Col, Row, Space } from 'antd';
 import React from 'react';
 
 const orderOptionsList = [
@@ -21,29 +21,33 @@ const orderOptionsList = [
 ];
 function OrderOptions({ orderOption, setOrderOption, orderDirection, setOrderDirection }) {
   return (
-    <>
+    <div className="orderOptions">
       <Row>
-        <Col>Order By</Col>
-        <Col offset={2}>
-          <Radio.Group
-            options={orderOptionsList}
-            onChange={({ target: { value } }) => {
-              setOrderOption(value);
-            }}
-            value={orderOption}
-            optionType="button"
-          />
-          <Radio.Group
-            onChange={({ target: { value } }) => {
-              setOrderDirection(value);
-            }}
-            value={orderDirection}>
-            <Radio value="asc">Ascending</Radio>
-            <Radio value="desc">Descending</Radio>
-          </Radio.Group>
+        <Col>
+          <Space>
+            Order By:
+            ,
+            <Radio.Group
+              options={orderOptionsList}
+              onChange={({ target: { value } }) => {
+                setOrderOption(value);
+              }}
+              value={orderOption}
+              optionType="button"
+            />
+            ,
+            <Radio.Group
+              onChange={({ target: { value } }) => {
+                setOrderDirection(value);
+              }}
+              value={orderDirection}>
+              <Radio value="asc">Ascending</Radio>
+              <Radio value="desc">Descending</Radio>
+            </Radio.Group>
+          </Space>
         </Col>
       </Row>
-    </>
+    </div>
   );
 }
 export default OrderOptions;

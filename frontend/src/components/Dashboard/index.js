@@ -1,4 +1,4 @@
-import { Divider, Skeleton, Button, Row, Col } from 'antd';
+import { Divider, Skeleton, Button, Row, Col, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useNavigate } from 'react-router-dom';
@@ -19,8 +19,16 @@ import OrderOptions from '../OrderOptions.js';
 
 const limit = process.env.REACT_APP_QUERY_LIMIT || 2;
 
-
-function Dashboard({ selectedUser, user, setUserId, setUserName, setUserHates, setUserLikes, clearState, setMovies }) {
+function Dashboard({
+  selectedUser,
+  user,
+  setUserId,
+  setUserName,
+  setUserHates,
+  setUserLikes,
+  clearState,
+  setMovies
+}) {
   const [data, setData] = useState([]);
   const [skip, setSkip] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -34,7 +42,9 @@ function Dashboard({ selectedUser, user, setUserId, setUserName, setUserHates, s
     setLoading(true);
     setSkip(0);
     try {
-      const res = selectedUser ? await getUserMovies(selectedUser, 0, limit, orderOption, orderDirection) : await getMovies(0, limit, orderOption, orderDirection);
+      const res = selectedUser
+        ? await getUserMovies(selectedUser, 0, limit, orderOption, orderDirection)
+        : await getMovies(0, limit, orderOption, orderDirection);
       const movies = res.data;
       setData(movies);
       console.log(1, data);
@@ -59,7 +69,9 @@ function Dashboard({ selectedUser, user, setUserId, setUserName, setUserHates, s
     }
     try {
       setLoading(true);
-      const res = selectedUser ? await getUserMovies(selectedUser, skipApi, limit, orderOption, orderDirection) : await getMovies(skipApi, limit, orderOption, orderDirection);
+      const res = selectedUser
+        ? await getUserMovies(selectedUser, skipApi, limit, orderOption, orderDirection)
+        : await getMovies(skipApi, limit, orderOption, orderDirection);
       const movies = res.data;
       if (movies.length !== 0) {
         setSkip(skipApi + limit);
@@ -117,17 +129,22 @@ function Dashboard({ selectedUser, user, setUserId, setUserName, setUserHates, s
 
   return (
     <>
-      <Header
-        user={user} 
-        clearState={clearState}
-        initData={initData}>  
-      </Header>
-      <OrderOptions 
-        orderOption={orderOption}
-        setOrderOption={setOrderOption}
-        orderDirection={orderDirection}
-        setOrderDirection={setOrderDirection}
-      ></OrderOptions>
+      <Header user={user} clearState={clearState} initData={initData}></Header>
+      <Space>
+        <OrderOptions
+          orderOption={orderOption}
+          setOrderOption={setOrderOption}
+          orderDirection={orderDirection}
+          setOrderDirection={setOrderDirection}></OrderOptions>
+        ,
+        <Col span={12}>
+          {user.accessToken !== undefined && (
+            <Button type="primary" onClick={() => navigate('/users/addMovie')}>
+              Add Movie
+            </Button>
+          )}
+        </Col>
+      </Space>
 
       <Row>
         <Col
@@ -148,13 +165,6 @@ function Dashboard({ selectedUser, user, setUserId, setUserName, setUserHates, s
             scrollableTarget="scrollableDiv">
             <MovieList data={data} key={new Date().getTime()} />
           </InfiniteScroll>
-        </Col>
-        <Col span={12}>
-          {user.accessToken !== undefined && (
-            <Button type="primary" onClick={() => navigate('/users/addMovie')}>
-              Add Movie
-            </Button>
-          )}
         </Col>
       </Row>
     </>
