@@ -1,4 +1,14 @@
-.title {
+.haeder {
+  padding: 10px;
+}
+
+.logo {
+  padding: 10px;
   font-size: large;
   font-weight: bold;
+  text-decoration: none;
+}
+
+a.logo {
+  color: black;
 }

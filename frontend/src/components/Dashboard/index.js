@@ -1,12 +1,11 @@
 import { Divider, Skeleton, Button, Row, Col } from 'antd';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import MovieList from '../../components/MovieList';
-import LoginButton from '../../components/LoginButton';
+import Header from '../Header';
 import { getMovies, getUserMovies, getUserData } from '../../services/apiCalls';
-import SignUpButton from '../../components/SignUpButton';
 import { showError } from '../../utils';
 import {
   setUserId,
@@ -53,11 +52,6 @@ function Dashboard({ selectedUser, user, setUserId, setUserName, setUserHates, s
       showError('Error loading movie data', e.response.data.detail || e);
     }
   };
-
-  // useEffect(() => {
-  //   ....
-
-  // }, [skip, isLoading, sortoption])
 
   const loadMore = async (skipApi) => {
     if (loading) {
@@ -123,31 +117,11 @@ function Dashboard({ selectedUser, user, setUserId, setUserName, setUserHates, s
 
   return (
     <>
-      <Row>
-        <Col span={8} className="title">
-          Movierama
-        </Col>
-        {user.accessToken === undefined && (
-          <Col span={8} offset={7}>
-            <LoginButton />
-            <SignUpButton />
-          </Col>
-        )}
-        {user.accessToken !== undefined && (
-          <Col span={8} offset={10}>
-            <div>
-              Welcome <Link to={`users/${user.userId}`}>{user.userName}</Link> |
-              <Button
-                onClick={() => {
-                  clearState();
-                  initData();
-                }}>
-                Logout
-              </Button>
-            </div>
-          </Col>
-        )}
-      </Row>
+      <Header
+        user={user} 
+        clearState={clearState}
+        initData={initData}>  
+      </Header>
       <OrderOptions 
         orderOption={orderOption}
         setOrderOption={setOrderOption}
