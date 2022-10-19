@@ -16,9 +16,7 @@ function SignUp() {
       showError('Error during signup', e.response.data.detail || e);
     }
   };
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+
   return (
     <>
       <Row type="flex" justify="center" align="middle">
@@ -39,7 +37,6 @@ function SignUp() {
               span: 16
             }}
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
             autoComplete="off">
             <Form.Item
               label="Email"
