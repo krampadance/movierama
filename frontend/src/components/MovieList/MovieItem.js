@@ -19,8 +19,8 @@ const getDescription = (id, firstName, lastName, created) => (
     Posted from{' '}
     <Link to={`/users/${id}`}>
       {firstName} 
-{' '}
-{lastName}
+      {' '}
+      {lastName}
     </Link>{' '}
     {timeAgo(created)}
   </>
