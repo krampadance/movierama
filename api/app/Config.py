@@ -5,7 +5,6 @@ class Config(object):
     # App related variables
     NAME = "movierama"
     VERSION = "0.1.0-alpha.0"
-    PORT = os.getenv("PORT", 8000)
 
     # Postgres related variables
     POSTGRES_USER = os.getenv("POSTGRES_USER", "postgres")

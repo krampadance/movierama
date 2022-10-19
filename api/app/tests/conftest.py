@@ -1,3 +1,9 @@
+from ..routes.dependencies import get_db
+from ..database.database import engine
+from ..models.vote import Base as VoteBase
+from ..models.movie import Base as MovieBase
+from ..models.user import Base as UserBase
+from ..routes import auth, users, movies
 from typing import Any
 from typing import Generator
 
@@ -10,16 +16,8 @@ from sqlalchemy_utils import database_exists, create_database
 
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
-#this is to include backend dir in sys.path so that we can import from db,main.py
-
-from ..routes import auth, users, movies
-from ..models.user import Base as UserBase
-from ..models.movie import Base as MovieBase
-from ..models.vote import Base as VoteBase
-from ..database.database import engine
-
-from ..routes.dependencies import get_db
+# this is to include backend dir in sys.path so that we can import from db,main.py
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def start_application():
@@ -51,6 +49,7 @@ def app() -> Generator[FastAPI, Any, None]:
     UserBase.metadata.drop_all(bind=engine)
     MovieBase.metadata.drop_all(bind=engine)
     VoteBase.metadata.drop_all(bind=engine)
+
 
 @pytest.fixture(scope="session")
 def db_session(app: FastAPI) -> Generator[SessionTesting, Any, None]:

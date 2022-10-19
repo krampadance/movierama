@@ -1,6 +1,8 @@
-from sqlite3 import Timestamp
+from typing import List
+
 from pydantic import BaseModel
-from typing import Optional
+
+from .vote import Vote
 
 
 class UserBase(BaseModel):
@@ -20,3 +22,12 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
+
+
+class UserVotes(User):
+    votes: List[Vote] = []
+
+
+class UserData(User):
+    liked_movies: List[int] = []
+    hated_movies: List[int] = []

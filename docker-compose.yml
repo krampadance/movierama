@@ -19,7 +19,6 @@ services:
       - POSTGRES_HOST=postgres
       - DATABASE=movierama
       - POSTGRES_PORT=5432
-      - PORT=8000
     ports: 
-      - 8000:80
+      - 8000:8000
     restart: always

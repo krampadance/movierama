@@ -14,7 +14,8 @@ router = APIRouter(
     tags=["auth"],
 )
 
-@router.post("/login", response_model=Token)
+
+@router.post("/login/", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
@@ -23,7 +24,8 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=Config.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(
+        minutes=Config.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         # Add user data to token
         data={
@@ -36,7 +38,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     return Token(access_token=access_token, token_type='Bearer')
 
 
-@router.post("/signup", response_model=User)
+@router.post("/signup/", response_model=User)
 def sign_up(user: UserCreate, db: Session = Depends(get_db)):
     db_user = get_user_by_email(db, email=user.email)
     if db_user:

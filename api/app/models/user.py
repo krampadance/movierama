@@ -12,4 +12,5 @@ class User(Base):
     first_name = Column(String, nullable=True)
     last_name = Column(String, nullable=True)
 
-    movies = relationship("Movie", back_populates="owner")
+    movies = relationship("Movie")
+    votes = relationship("Vote")

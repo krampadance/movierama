@@ -10,8 +10,10 @@ class MovieBase(BaseModel):
     title: str
     description: Optional[str] = None
 
+
 class MovieCreate(MovieBase):
     pass
+
 
 class Movie(MovieBase):
     id: int
@@ -25,5 +27,6 @@ class Movie(MovieBase):
         orm_mode = True
         json_encoders = {
             # Encode datetime into a utc timestamp
-            datetime: lambda d: int(d.replace(tzinfo=timezone.utc).timestamp() * 1000)
+            datetime: lambda d: round(
+                int(d.replace(tzinfo=timezone.utc).timestamp() * 1000))
         }
