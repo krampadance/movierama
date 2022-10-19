@@ -1,4 +1,4 @@
-import { Divider, Skeleton, Button, Row, Col, Radio } from 'antd';
+import { Divider, Skeleton, Button, Row, Col } from 'antd';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link, useNavigate } from 'react-router-dom';
@@ -16,26 +16,10 @@ import {
   clearState,
   setMovies
 } from '../../redux/actions';
+import OrderOptions from '../OrderOptions.js';
 
 const limit = process.env.REACT_APP_QUERY_LIMIT || 2;
-const orderOptionsList = [
-  {
-    label: 'Likes',
-    value: 'likes_count'
-  },
-  {
-    label: 'Hates',
-    value: 'hates_count'
-  },
-  {
-    label: 'Date',
-    value: 'created_at'
-  },
-  {
-    label: 'None',
-    value: 'none'
-  }
-];
+
 
 function Dashboard({ selectedUser, user, setUserId, setUserName, setUserHates, setUserLikes, clearState, setMovies }) {
   const [data, setData] = useState([]);
@@ -46,8 +30,6 @@ function Dashboard({ selectedUser, user, setUserId, setUserName, setUserHates, s
   const [orderOption, setOrderOption] = useState('none');
   const navigate = useNavigate();
 
-
-  console.log(selectedUser)
   const initData = async () => {
     setData([]);
     setLoading(true);
@@ -85,14 +67,12 @@ function Dashboard({ selectedUser, user, setUserId, setUserName, setUserHates, s
       setLoading(true);
       const res = selectedUser ? await getUserMovies(selectedUser, skipApi, limit, orderOption, orderDirection) : await getMovies(skipApi, limit, orderOption, orderDirection);
       const movies = res.data;
-      // console.log(1, movies);
       if (movies.length !== 0) {
         setSkip(skipApi + limit);
       }
       if (movies.length < limit) {
         setLoaded(true);
       }
-      console.log(data, movies);
       setData(data.concat(movies));
       const moviesObject = user.movies;
       const newObj = {};
@@ -109,7 +89,6 @@ function Dashboard({ selectedUser, user, setUserId, setUserName, setUserHates, s
       showError('Error loading movie data', e.response.data.detail || e);
     }
   };
-  // console.log(user);
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -169,28 +148,12 @@ function Dashboard({ selectedUser, user, setUserId, setUserName, setUserHates, s
           </Col>
         )}
       </Row>
-      <Row>
-        <Col>Order By</Col>
-        <Col offset={2}>
-          <Radio.Group
-            options={orderOptionsList}
-            onChange={({ target: { value } }) => {
-              setOrderOption(value);
-            }}
-            value={orderOption}
-            optionType="button"
-          />
-
-          <Radio.Group
-            onChange={({ target: { value } }) => {
-              setOrderDirection(value);
-            }}
-            value={orderDirection}>
-            <Radio value="asc">Ascending</Radio>
-            <Radio value="desc">Descending</Radio>
-          </Radio.Group>
-        </Col>
-      </Row>
+      <OrderOptions 
+        orderOption={orderOption}
+        setOrderOption={setOrderOption}
+        orderDirection={orderDirection}
+        setOrderDirection={setOrderDirection}
+      ></OrderOptions>
 
       <Row>
         <Col
