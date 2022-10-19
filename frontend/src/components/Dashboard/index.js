@@ -12,8 +12,9 @@ import {
   setUserName,
   setUserHates,
   setUserLikes,
-  clearState,
-  setMovies
+  setMovieVotes,
+  clearMovieVotes,
+  clearUser
 } from '../../redux/actions';
 import OrderOptions from '../OrderOptions.js';
 
@@ -22,12 +23,14 @@ const limit = process.env.REACT_APP_QUERY_LIMIT || 2;
 function Dashboard({
   selectedUser,
   user,
+  votes,
   setUserId,
   setUserName,
   setUserHates,
   setUserLikes,
-  clearState,
-  setMovies
+  clearUser,
+  setMovieVotes,
+  clearMovieVotes
 }) {
   const [data, setData] = useState([]);
   const [skip, setSkip] = useState(0);
@@ -36,6 +39,11 @@ function Dashboard({
   const [orderDirection, setOrderDirection] = useState('desc');
   const [orderOption, setOrderOption] = useState('none');
   const navigate = useNavigate();
+
+  const clearState = () => {
+    clearUser();
+    clearMovieVotes();
+  };
 
   const initData = async () => {
     setData([]);
@@ -47,15 +55,14 @@ function Dashboard({
         : await getMovies(0, limit, orderOption, orderDirection);
       const movies = res.data;
       setData(movies);
-      console.log(1, data);
-      const moviesObject = user.movies;
+      const moviesVotesObject = votes.movies;
       movies.map((m) => {
-        moviesObject[m.id] = {
+        moviesVotesObject[m.id] = {
           likesCount: m.likes_count,
           hatesCount: m.hates_count
         };
       });
-      setMovies(moviesObject);
+      setMovieVotes(moviesVotesObject);
       setLoaded(false);
       setLoading(false);
     } catch (e) {
@@ -80,7 +87,7 @@ function Dashboard({
         setLoaded(true);
       }
       setData(data.concat(movies));
-      const moviesObject = user.movies;
+      const moviesObject = votes.movies;
       const newObj = {};
       movies.map(
         (m) =>
@@ -89,7 +96,7 @@ function Dashboard({
             hatesCount: m.hates_count
           })
       );
-      setMovies({ ...moviesObject, ...newObj });
+      setMovieVotes({ ...moviesObject, ...newObj });
       setLoading(false);
     } catch (e) {
       showError('Error loading movie data', e.response.data.detail || e);
@@ -172,7 +179,8 @@ function Dashboard({
 }
 
 const mapStateToProps = (state) => ({
-  user: state
+  user: state.user,
+  votes: state.votes
 });
 
 export default connect(mapStateToProps, {
@@ -180,6 +188,7 @@ export default connect(mapStateToProps, {
   setUserName,
   setUserLikes,
   setUserHates,
-  clearState,
-  setMovies
+  clearUser,
+  setMovieVotes,
+  clearMovieVotes
 })(Dashboard);

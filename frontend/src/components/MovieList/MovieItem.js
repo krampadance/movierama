@@ -18,9 +18,7 @@ const getDescription = (id, firstName, lastName, created) => (
   <>
     Posted from{' '}
     <Link to={`/users/${id}`}>
-      {firstName} 
-      {' '}
-      {lastName}
+      {firstName} {lastName}
     </Link>{' '}
     {timeAgo(created)}
   </>
@@ -44,7 +42,8 @@ function MovieItem({
   const [dislikeIconColor, setDislikeIconColor] = useState();
 
   const voteLike = (movieId) => {
-    console.log('like vote');
+    // When voting we want to remove the vote if the user has already voted
+    // and add a new vote, unless the user is revoking his own vote
     let index = userLikes.indexOf(movieId);
     if (index > -1) {
       // Remove liked movie
@@ -70,7 +69,8 @@ function MovieItem({
   };
 
   const voteHate = (movieId) => {
-    console.log('hate vote');
+    // When voting we want to remove the vote if the user has already voted
+    // and add a new vote, unless the user is revoking his own vote
     let index = userHates.indexOf(movieId);
     if (index > -1) {
       // Remove hated movie
@@ -149,11 +149,11 @@ function MovieItem({
 }
 
 const mapStateToProps = (state) => ({
-  userLikes: state.userLikes,
-  userHates: state.userHates,
-  userId: state.userId,
-  accessToken: state.accessToken,
-  movieCounts: state.movies
+  userLikes: state.user.userLikes,
+  userHates: state.user.userHates,
+  userId: state.user.userId,
+  accessToken: state.user.accessToken,
+  movieCounts: state.votes.movies
 });
 
 export default connect(mapStateToProps, {

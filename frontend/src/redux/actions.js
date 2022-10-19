@@ -3,9 +3,10 @@ import {
   SET_USER_HATES,
   SET_USER_LIKES,
   SET_USERNAME,
-  CLEAR_STATE,
+  CLEAR_USER,
   SET_ACCESS_TOKEN,
-  SET_MOVIES,
+  CLEAR_MOVIE_VOTES,
+  SET_MOVIE_VOTES,
   ADD_LIKE,
   ADD_HATE,
   REMOVE_HATE,
@@ -37,14 +38,19 @@ export const setAccessToken = (accessToken) => ({
   payload: accessToken
 });
 
-export const clearState = () => ({
-  type: CLEAR_STATE,
+export const clearUser = () => ({
+  type: CLEAR_USER,
   payload: {}
 });
 
-export const setMovies = (movies) => ({
-  type: SET_MOVIES,
-  payload: movies
+export const clearMovieVotes = () => ({
+  type: CLEAR_MOVIE_VOTES,
+  payload: {}
+});
+
+export const setMovieVotes = (votes) => ({
+  type: SET_MOVIE_VOTES,
+  payload: votes
 });
 
 export const addLike = (movieId) => ({
