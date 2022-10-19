@@ -18,7 +18,7 @@ import {
 } from '../../redux/actions';
 import OrderOptions from '../OrderOptions.js';
 
-const limit = process.env.REACT_APP_QUERY_LIMIT || 2;
+const limit = process.env.REACT_APP_QUERY_LIMIT || 2; // The limit for the pagination
 
 function Dashboard({
   selectedUser,
@@ -153,7 +153,6 @@ function Dashboard({
           setOrderOption={setOrderOption}
           orderDirection={orderDirection}
           setOrderDirection={setOrderDirection}></OrderOptions>
-        ,
         <Col span={12}>
           {user.accessToken !== undefined && (
             <Button type="primary" onClick={() => navigate('/users/addMovie')}>

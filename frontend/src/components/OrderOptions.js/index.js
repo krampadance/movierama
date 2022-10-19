@@ -26,7 +26,7 @@ function OrderOptions({ orderOption, setOrderOption, orderDirection, setOrderDir
       <Row>
         <Col>
           <Space>
-            Order By: ,
+            Order By:
             <Radio.Group
               options={orderOptionsList}
               onChange={({ target: { value } }) => {
@@ -35,7 +35,6 @@ function OrderOptions({ orderOption, setOrderOption, orderDirection, setOrderDir
               value={orderOption}
               optionType="button"
             />
-            ,
             <Radio.Group
               onChange={({ target: { value } }) => {
                 setOrderDirection(value);

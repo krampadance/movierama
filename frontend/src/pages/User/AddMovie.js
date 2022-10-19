@@ -80,7 +80,7 @@ function AddMovie({ accessToken }) {
 }
 
 const mapStateToProps = (state) => ({
-  accessToken: state.accessToken
+  accessToken: state.user.accessToken
 });
 
 export default connect(mapStateToProps)(AddMovie);
