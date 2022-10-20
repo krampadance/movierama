@@ -5,6 +5,8 @@ The frontend that connects to the movierama api.
 Run the docker compose in the movierama folder
 `docker-compose up --build` to have the server and the database running.
 
+Run, `yarn install` to install the dependencies
+
 and start the app using:
 `yarn start`
 
